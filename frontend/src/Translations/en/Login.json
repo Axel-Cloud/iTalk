@@ -1,0 +1,18 @@
+{
+    "Language": "English",
+    "TitleLogin": "Sign into your account",
+    "DescriptionLogin": "Don't have an account?",
+    "SubDescriptionLogin": "Sign up here!",
+    "EmailPlaceholder": "Email",
+    "PasswordPlaceholder": "Password",
+    "Login": "Log In",
+    "ForgotPassword": "Forgot Password?",
+    "AsideDescription": "Just a few clicks away from connecting with family, friends, and the whole world!",
+    "AsideSubDescription": "Connect With Yourself!",
+    "MissingLoginDataTitle": "Warning",
+    "MissingLoginDataMessage": "You must enter your login details",
+    "ErrorLoginTitle": "Error",
+    "ErrorLoginMessage": "There was an error, please try again.",
+    "InvalidLoginTitle": "Warning",
+    "InvalidLoginMessage": "The data entered does not match any user."
+}

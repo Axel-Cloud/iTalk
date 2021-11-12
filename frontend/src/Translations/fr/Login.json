@@ -1,0 +1,18 @@
+{
+    "Language": "Français",
+    "TitleLogin": "Connectez-vous à votre compte",
+    "DescriptionLogin": "Vous ñ'avez pas de compte ?",
+    "SubDescriptionLogin": "Inscrivez-vous ici !",
+    "EmailPlaceholder": "Adresse e-mail",
+    "PasswordPlaceholder": "Mot de passe",
+    "Login": "Se Connecter",
+    "ForgotPassword": "Mot de passe oublié ?",
+    "AsideDescription": "Vous n'êtes qu'à quelques clics de vous connecter avec votre famille, vos amis et le monde !",
+    "AsideSubDescription": "Connectez-vous avec vous-même !",
+    "MissingLoginDataTitle": "Avertissement",
+    "MissingLoginDataMessage": "Vous devez entrer vos informations de connexion",
+    "ErrorLoginTitle": "Erreur",
+    "ErrorLoginMessage": "Une erreur s'est produite, veuillez réessayer.",
+    "InvalidLoginTitle": "Avertissement",
+    "InvalidLoginMessage": "Les données saisies ne correspondent à aucun utilisateur."
+}

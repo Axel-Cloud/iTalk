@@ -1,0 +1,18 @@
+{
+    "Language": "Español",
+    "TitleLogin": "Inicia sesión en tu cuenta",
+    "DescriptionLogin": "¿No tienes una cuenta?",
+    "SubDescriptionLogin": "¡Registrate aquí!",
+    "EmailPlaceholder": "Correo Electrónico",
+    "PasswordPlaceholder": "Contraseña",
+    "Login": "Iniciar Sesión",
+    "ForgotPassword": "¿Olvidaste tu contraseña?",
+    "AsideDescription": "Solo unos clics para conectar con tu familia, amigos, y todo el mundo!",
+    "AsideSubDescription": "¡Conecta Contigo!",
+    "MissingLoginDataTitle": "Advertencia",
+    "MissingLoginDataMessage": "Debes ingresar tus datos para iniciar sesión",
+    "ErrorLoginTitle": "Error",
+    "ErrorLoginMessage": "Hubo un error, por favor intente de nuevo.",
+    "InvalidLoginTitle": "Advertencia",
+    "InvalidLoginMessage": "Los datos ingresados ​​no coinciden con ningún usuario."
+}

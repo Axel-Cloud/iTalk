@@ -1,0 +1,23 @@
+{
+    "SignUpTitle": "Registrate en iTalk",
+    "SignUpDescription": "¿Ya eres miembro?",
+    "SignUpSubdescription": "¡Inicia Sesión!",
+    "FirstNameLabel": "Primer Nombre",
+    "LastNameLabel": "Apellido",
+    "EmailLabel": "Correo Electrónico",
+    "EmailPlaceholder": "Ejemplo@iTalk.com",
+    "GenderLabel": "Género",
+    "GenderMale": "Hombre",
+    "GenderFemale": "Mujer",
+    "GenderCustom": "Otro",
+    "Password": "Contraseña",
+    "ConfirmPassword": "Confirmar Contraseña",
+    "PasswordValidation": "La contraseña debe contener mínimo 6 carácteres",
+    "CreateAccount": "Crear Cuenta",
+    "DuplicatedEmailTitle": "Advertencia",
+    "DuplicatedEmailDescription": "El email ingresado ya está vinculado a una cuenta",
+    "CreateAccountErrorTitle": "Error",
+    "CreateAccountErrorDescription": "Hubo un error al crear su cuenta, intente nuevamente",
+    "CreateAccountSuccessTitle": "Cuenta Creada",
+    "CreateAccountSuccessDescription": "Su cuenta fue creada satisfactoriamente!"
+}
