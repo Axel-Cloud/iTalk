@@ -7,9 +7,9 @@ const Create = async (Data, UserResponse) => {
     {
       Name: Data.Name,
       Lastname: Data.Lastname,
-      Email: Data.Email,
+      Email: Data.Email.toUpperCase(),
       Password: Data.Password,
-      Gender: Data.Gender
+      Gender: Data.GenderUsersSchema
     },
     (Error) => {
       UserResponse.send(
@@ -21,7 +21,7 @@ const Create = async (Data, UserResponse) => {
 
 const Login = async (Data, UserResponse) => {
   await UsersSchema.findOne(
-    { Email: Data.Email, Password: Data.Password },
+    { Email: Data.Email.toUpperCase(), Password: Data.Password },
     (Error, User) => {
       UserResponse.send(
         Error ? `Error: ${Error}` : User === null ? "Invalid" : User._id
@@ -31,7 +31,7 @@ const Login = async (Data, UserResponse) => {
 };
 
 const ForgotPass = async (Data, UserResponse) => {
-  await UsersSchema.findOne({ Email: Data.body.Email }, (Error, User) => {
+  await UsersSchema.findOne({ Email: Data.body.Email.toUpperCase() }, (Error, User) => {
     if(!Error){
       if(User !== null){
         UsersRecover.create({

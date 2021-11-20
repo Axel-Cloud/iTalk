@@ -33,18 +33,18 @@ export default function SignUp({ InitialTransition }){
 
     const SignUpVariants = {
         initial: {
-            x: InitialTransition
+            opacity: 0
         },
         animate: {
-            x: 0
+            opacity: 1
         },
         exit: {
-            x: "100vw"
+            opacity: 0
         }
     }
 
     const SignUpTransition = {
-        duration: 1.5
+        duration: 0.5
     }
     
     const setFields = (Field, Value) => {

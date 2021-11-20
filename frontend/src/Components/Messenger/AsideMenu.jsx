@@ -13,6 +13,12 @@ import { ReactComponent as ConfigIcon } from '../../Assets/icons/Config.svg';
 import { ReactComponent as SignOutIcon } from '../../Assets/icons/SignOut.svg';
 
 export default function AsideMenu({ SelectedMenu }){
+    
+    const Logout = () => {
+        localStorage.removeItem("User");
+        window.location.reload();
+    }
+
     return(
         <aside className="w-100 vh-100 container-fluid AsideMenu">
             <div className="row h-100">
@@ -35,7 +41,7 @@ export default function AsideMenu({ SelectedMenu }){
                         </button>
                     </div>
 
-                    <button className="d-block position-absolute bottom-0 pb-2 w-50 start-50 translate-middle mt-4 ms-auto me-auto border-0 bg-transparent">
+                    <button className="d-block position-absolute bottom-0 pb-2 w-50 start-50 translate-middle mt-4 ms-auto me-auto border-0 bg-transparent" onClick={ Logout }>
                         <SignOutIcon className="IconColor"/>
                     </button>
                 </section>

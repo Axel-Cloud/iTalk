@@ -12099,21 +12099,23 @@ fieldset:disabled .btn {
 
 .Messenger .AsideMenu .Menu {
   height: 99%;
-  background-color: #167daca9;
+  background-color: #ECFAFF;
   border-radius: 25px;
 }
 
 .Messenger .AsideMenu .Menu .SelectedMenu {
-  background-color: #8cbad1b0;
-  border-radius: 5px;
+  fill: #00000075;
+  pointer-events: none;
 }
 
 .Messenger .AsideMenu .Menu button {
-  fill: #4b4b4b;
+  transition: all 0.5s ease;
+  fill: #000;
 }
 
 .Messenger .AsideMenu .Menu button:hover {
-  fill: #c9c9c9;
+  fill: #167daca9;
+  transform: scale(1.1);
 }
 
 .Messenger .AsideMenu .Menu button .IconColor {
@@ -12122,8 +12124,6 @@ fieldset:disabled .btn {
 
 .Messenger .AsideMenu .Menu button .IconColor path {
   fill: inherit;
-  -webkit-transition: fill 0.5s ease;
-  transition: fill 0.5s ease;
 }
 
 .Messenger .ProfileInfo {
@@ -12176,6 +12176,22 @@ fieldset:disabled .btn {
   color: rgba(131, 131, 131, 0.5);
 }
 
+.Messenger .ConversationList li {
+  height: 80px;
+  overflow: hidden;
+  transition: all 0.5s ease;
+}
+
+.Messenger .ConversationList li:hover {
+  background-color: #E5E5E5;
+}
+
+
+.Messenger .ConversationList li article figure{
+  top: 50%;
+  transform: translateY(-32.5%);
+}
+
 .Messenger .ConversationList ul {
   list-style-type: none;
   overflow: auto;
@@ -12210,4 +12226,59 @@ fieldset:disabled .btn {
   position: absolute;
   bottom: 15%;
 }
+
+.Chat .MessageList{
+  transition: all 0.5s ease;
+  height: var(--MessageList-Height);
+  overflow: hidden;
+}
+
+.Chat .MessageList .Message span{
+  display: inline-block;
+  width: 48%;
+  background-color: #DEE2EC;
+  word-break: break-all;
+}
+
+.Chat .MessageField{
+  transition: all 0.5s ease;
+  height: var(--MessageField-Height);
+  overflow: hidden;
+}
+
+.Chat .MessageField .MessageIcon{
+  transition: all 0.5s ease;
+  height: var(--MessageIcon-Height);
+}
+
+.Chat .MessageField .SendIcon{
+  fill: #0dcaf0;
+}
+
+.Chat .MessageField div{
+  width: 90% !important;
+}
+
+.Chat .MessageField div textarea{
+  position: relative;
+  top: 50%;
+  transform: translateY(-50%);
+  resize: none;
+}
+
+.Chat .MessageField button .MessageIcon {
+  transition: all 0.5s ease;
+  fill: #6f42c1;
+}
+
+.Chat .MessageField button .MessageIcon:hover {
+  fill: #167daca9;
+  transform: scale(1.1);
+}
+
+.Chat .MessageField button .MessageIcon path {
+  fill: inherit;
+}
+
+
 /*# sourceMappingURL=bootstrap.css.map */

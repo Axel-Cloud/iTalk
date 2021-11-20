@@ -30,7 +30,7 @@ export default function ForgotPass(){
     };
 
     const ForgotPassTransition = {
-        duration: 1.5
+        duration: 0.5
     };
 
     const EmailSetter = (Value) => {

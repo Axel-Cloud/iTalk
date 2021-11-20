@@ -20,7 +20,7 @@ export default function ITalk() {
 
   return (
     <main className="iTalkMain">
-      <AnimatePresence>
+      <AnimatePresence exitBeforeEnter>
         <Switch location={Location} key={Location.pathname}>
           <Route path="/" exact>
             {
