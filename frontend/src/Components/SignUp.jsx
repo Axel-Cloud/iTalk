@@ -76,17 +76,17 @@ export default function SignUp({ InitialTransition }){
         FormSubmited = true;
         ValidateForm();
 
-        FirstNameRef.current.disabled = true;
-        LastNameRef.current.disabled = true;
-        EmailRef.current.disabled = true;
-        GenderMaleRef.current.disabled = true;
-        GenderFemaleRef.current.disabled = true;
-        GenderCustomRef.current.disabled = true;
-        PasswordRef.current.disabled = true;
-        ConfirmPasswordRef.current.disabled = true;
-        SignUpButton.current.disabled = true;
-
         if(FirstNameRef.current.classList.contains("is-valid") && LastNameRef.current.classList.contains("is-valid") && EmailRef.current.classList.contains("is-valid") && (GenderMaleRef.current.classList.contains("is-valid") || GenderFemaleRef.current.classList.contains("is-valid") || GenderCustomRef.current.classList.contains("is-valid")) && PasswordRef.current.classList.contains("is-valid") && ConfirmPasswordRef.current.classList.contains("is-valid")){
+            FirstNameRef.current.disabled = true;
+            LastNameRef.current.disabled = true;
+            EmailRef.current.disabled = true;
+            GenderMaleRef.current.disabled = true;
+            GenderFemaleRef.current.disabled = true;
+            GenderCustomRef.current.disabled = true;
+            PasswordRef.current.disabled = true;
+            ConfirmPasswordRef.current.disabled = true;
+            SignUpButton.current.disabled = true;
+
             Axios.post("http://localhost:3001/api/Users", {
                 "Name": FirstName,
                 "Lastname": LastName,
@@ -128,6 +128,9 @@ export default function SignUp({ InitialTransition }){
                     SignUpButton.current.disabled = false;
                 }
             });
+        }
+        else{
+            Toast.warning(t("MustCompleteFields"), t("DuplicatedEmailTitle"), { timeOut: 2500, showDuration: true, closeButton: true });
         }
     }
 

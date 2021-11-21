@@ -19,5 +19,6 @@
     "CreateAccountErrorTitle": "Erreur",
     "CreateAccountErrorDescription": "Une erreur s'est produite lors de la création de votre compte, veuillez réessayer",
     "CreateAccountSuccessTitle": "Compte Créé",
-    "CreateAccountSuccessDescription": "Votre compte a été créé avec succès"
+    "CreateAccountSuccessDescription": "Votre compte a été créé avec succès",
+    "MustCompleteFields": "Vous devez remplir tous les champs"
 }

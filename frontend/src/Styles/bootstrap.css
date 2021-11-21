@@ -12235,7 +12235,7 @@ fieldset:disabled .btn {
 
 .Chat .MessageList .Message span{
   display: inline-block;
-  width: 48%;
+  width: 45%;
   background-color: #DEE2EC;
   word-break: break-all;
 }

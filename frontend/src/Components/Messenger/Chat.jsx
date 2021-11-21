@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-
+import { io } from "socket.io-client";
 //Components
 import Messages from "./Message";
 
@@ -12,6 +12,14 @@ export default function Chat() {
     const [TARows, setTARows] = useState(1)
     const [FirstLineLength, setFirstLineLength] = useState(0);
     const [SecondLineLength, setSecondLineLength] = useState(0);
+
+    const Socket = io("http://localhost:3001");
+
+    useEffect(() => {
+        Socket.on("Message", ({UserID, Message}) => {
+            console.log(UserID, Message);
+        })
+    }, [])
 
     useEffect(() => {
         document.documentElement.style.setProperty("--MessageList-Height", TARows === 1 ? "94%" : TARows === 2 ? "91.5%" : "89%");
@@ -41,9 +49,19 @@ export default function Chat() {
         }
     }
 
+    const SendMessage = (e) => {
+        if(e.type === "keypress"){
+            e.preventDefault();
+        }
+               
+        Socket.emit("Message", {UserID: localStorage.getItem("User"), Message});
+    }
+
     return (
         <section className="vh-100 w-100 Chat">
             <div className="MessageList">
+                <Messages Message="Probando algo fuerte aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" UserID="6196e43e9f62271c580cbdb9"/>
+                <Messages Message="Probando algo fuerte aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" UserID="6196e43e9f62271c580cbdb9a"/>
                 <Messages Message="Probando algo fuerte aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" UserID="6196e43e9f62271c580cbdb9"/>
             </div>
 
@@ -53,10 +71,10 @@ export default function Chat() {
                 </button>
 
                 <div className="h-100 ms-3 me-2">
-                    <textarea className="form-control" rows={TARows} onChange={(e) => ChangeMessage(e)}/>
+                    <textarea className="form-control" rows={TARows} onChange={(e) => ChangeMessage(e)} onKeyPress={(e) => {if(e.code === "Enter" || e.code === "NumpadEnter"){SendMessage(e)}}}/>
                 </div>
 
-                <button className="d-block w-auto h-100 border-0 me-4">
+                <button className="d-block w-auto h-100 border-0 me-4" onClick={(e) => SendMessage(e)}>
                     <SendIcon className="MessageIcon SendIcon"/>
                 </button>
             </div>

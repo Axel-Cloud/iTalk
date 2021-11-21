@@ -19,6 +19,13 @@ const Create = async (Data, UserResponse) => {
   );
 };
 
+const Search = async (Data, UserResponse) => {
+  let SearchRegex = new RegExp(`^${Data.Search}`);
+  await UsersSchema.find({$or:[{ Name: SearchRegex }, { Lastname: SearchRegex }]}).select("Name Lastname").exec((Error, Users) => {
+    UserResponse.send(Error ? `Error: ${Error.message}` : Users);
+  });
+};
+
 const Login = async (Data, UserResponse) => {
   await UsersSchema.findOne(
     { Email: Data.Email.toUpperCase(), Password: Data.Password },
@@ -171,4 +178,4 @@ const CancelResetPass = async (Data, UserResponse) => {
   });
 };
 
-module.exports = { Create, Login, ForgotPass, ResetPass, CancelResetPass };
+module.exports = { Create, Search, Login, ForgotPass, ResetPass, CancelResetPass };

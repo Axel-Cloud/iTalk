@@ -19,5 +19,6 @@
     "CreateAccountErrorTitle": "Error",
     "CreateAccountErrorDescription": "Hubo un error al crear su cuenta, intente nuevamente",
     "CreateAccountSuccessTitle": "Cuenta Creada",
-    "CreateAccountSuccessDescription": "Su cuenta fue creada satisfactoriamente!"
+    "CreateAccountSuccessDescription": "Su cuenta fue creada satisfactoriamente!",
+    "MustCompleteFields": "Debe llenar todos los campos"
 }

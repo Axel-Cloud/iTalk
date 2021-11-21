@@ -14,6 +14,9 @@ const UsersRouter = Router();
 UsersRouter.get("/", (Request, Response) => {
                 Users.Login(Request.query, Response);
             })
+            .get("/Search", (Request, Response) => {
+                Users.Search(Request.query, Response);
+            })
             .post("/", (Request, Response) => {
                 Users.Create(Request.body, Response);
             })
