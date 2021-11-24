@@ -1,3 +1,4 @@
+import UserSchema from "../Models/Users";
 import ConversationSchema from "../Models/Conversation";
 
 const Recieve = async (Data, ConversationResponse) => {
@@ -11,34 +12,40 @@ const Recieve = async (Data, ConversationResponse) => {
     });
 };
 
-const NewMessage = async ({ConversationID, UserID, Message}, SocketIO) => {
+const NewMessage = async ({ConversationID, EmitterID, RecieverID, Message}, Socket) => {
     await ConversationSchema.findById(ConversationID, async (Error, Conversation) => {
         if(Conversation !== null){
+            //Falta retornar el id del mensaje
             let NewConversation = Conversation.Conversation;
-            let NewMessage = {UserID, Message, Date: new Date(), Readed: false};
+            let NewMessage = {UserID: EmitterID, Message, Date: new Date(), Readed: false};
             NewConversation.push(NewMessage);
 
             Conversation.Conversation = NewConversation;
             Conversation.save();
 
-            SocketIO.emit("Message", NewMessage);
+            Socket.emit("Message", NewMessage);
         }
         else{
             await ConversationSchema.create({
                 _id: ConversationID,
                 Conversation: [
                     {
-                        UserID,
+                        UserID: EmitterID,
                         Message,
                         Date: new Date(),
                         Readed: false
                     }
                 ]
             });
+            
+            await UserSchema.findById(EmitterID, (Error, User) => {
+                User.Conversations.push(ConversationID);
+                User.save();
 
-            SocketIO.emit("Message", {UserID, Message, Date: new Date(), Readed: false});
+                Socket.emit("Message", {UserID: EmitterID, Message, Date: new Date(), Readed: false});
+            });
         }
     })
-}
+};
 
 export default {Recieve, NewMessage};

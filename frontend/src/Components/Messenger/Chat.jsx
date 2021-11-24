@@ -19,15 +19,21 @@ export default function Chat() {
     const [ConversationMessages, setConversationMessages] = useState([]);
 
     const Socket = io("http://localhost:3001");
+    const MessageInputRef = React.createRef();
     const SelectedConversation = useSelector(state => state.SelectedConversationReducer);
 
     useEffect(() => {
+        MessageInputRef.current.focus();
+    }, [MessageInputRef])
+
+    useEffect(() => {
         Socket.on("Message", (NewMessage) => {
-            console.log(ConversationMessages)
             console.log(NewMessage);
-            //setConversationMessages([...ConversationMessages, NewMessage]);
+            if(ConversationMessages !== undefined){
+                setConversationMessages([...ConversationMessages, NewMessage]);
+            }
         });
-    }, []);
+    }, [Socket]);
 
     useEffect(() => {
         document.documentElement.style.setProperty("--MessageList-Height", TARows === 1 ? "94%" : TARows === 2 ? "91.5%" : "89%");
@@ -72,11 +78,10 @@ export default function Chat() {
             e.preventDefault();
         }
         
-        if(SelectedConversation.ID < localStorage.getItem("User")){
-
+        if(Message.trim().length > 0){
+            MessageInputRef.current.value = "";
+            Socket.emit("Message", {ConversationID: SelectedConversation.ID < localStorage.getItem("User") ? MD5(`${SelectedConversation.ID}${localStorage.getItem("User")}`) : MD5(`${localStorage.getItem("User")}${SelectedConversation.ID}`), EmitterID: localStorage.getItem("User"), RecieverID: SelectedConversation.ID,  Message});
         }
-
-        Socket.emit("Message", {ConversationID: SelectedConversation.ID < localStorage.getItem("User") ? MD5(`${SelectedConversation.ID}${localStorage.getItem("User")}`) : MD5(`${localStorage.getItem("User")}${SelectedConversation.ID}`), UserID: localStorage.getItem("User"), Message});
     };
 
     return (
@@ -100,7 +105,7 @@ export default function Chat() {
                         ConversationMessages !== undefined &&
                         ConversationMessages.map((message) => {
                             return (
-                                <Messages Message={message.Message} UserID={message.UserID}/>
+                                <Messages key={message._id} Message={message.Message} UserID={message.UserID}/>
                             );
                         })
                     }
@@ -113,7 +118,7 @@ export default function Chat() {
                 </button>
 
                 <div className="h-100 ms-3 me-2">
-                    <textarea className="form-control" rows={TARows} onChange={(e) => ChangeMessage(e)} onKeyPress={(e) => {if(e.code === "Enter" || e.code === "NumpadEnter"){SendMessage(e)}}}/>
+                    <textarea className="form-control" rows={TARows} ref={MessageInputRef} onChange={(e) => ChangeMessage(e)} onKeyPress={(e) => {if(e.code === "Enter" || e.code === "NumpadEnter"){SendMessage(e)}}}/>
                 </div>
 
                 <button className="d-block w-auto h-100 border-0 me-4" onClick={(e) => SendMessage(e)}>

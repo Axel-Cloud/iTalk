@@ -12099,11 +12099,12 @@ fieldset:disabled .btn {
 
 .Messenger .AsideMenu .Menu {
   height: 99%;
-  background-color: #ECFAFF;
+  background-color: #fffafa;
   border-radius: 25px;
 }
 
 .Messenger .AsideMenu .Menu .SelectedMenu {
+  background-color: #ffffff;
   fill: #00000075;
   pointer-events: none;
 }
@@ -12281,6 +12282,10 @@ fieldset:disabled .btn {
   resize: none;
 }
 
+.Chat .MessageField button{
+  background-color: #ffffff;
+}
+
 .Chat .MessageField button .MessageIcon {
   transition: all 0.5s ease;
   fill: #6f42c1;
@@ -12312,6 +12317,10 @@ fieldset:disabled .btn {
 
 .Search ul li article p:hover{
   color: #167daca9;
+}
+
+.Search button{
+  background-color: #ffffff;
 }
 
 .Search button .OpenChat{
