@@ -38,9 +38,9 @@ SocketIO.on("connection", (Socket) => {
         Users.UpdateOnline({ID: UserID.UserID, Online: false});
     });
 
-    Socket.on("Message", ({ConversationID, UserID, Message}) => {
-        Conversations.NewMessage({ConversationID, UserID, Message}, SocketIO);
-    })
+    Socket.on("Message", ({ConversationID, EmitterID, RecieverID, Message}) => {
+        Conversations.NewMessage({ConversationID, EmitterID, RecieverID, Message}, SocketIO);
+    });
 });
 
 /* Server Listen */
