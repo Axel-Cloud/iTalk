@@ -12146,7 +12146,18 @@ fieldset:disabled .btn {
   position: relative;
   width: 15px;
   height: 15px;
-  background-color: #5ad539;
+  background-color: #5AD539;
+  bottom: 15px;
+  margin: 0;
+  border: 2px solid white;
+  margin-left: auto;
+}
+
+.Messenger .ProfileStatusRed {
+  position: relative;
+  width: 15px;
+  height: 15px;
+  background-color: #CE5B5B;
   bottom: 15px;
   margin: 0;
   border: 2px solid white;
@@ -12235,9 +12246,13 @@ fieldset:disabled .btn {
 
 .Chat .MessageList .Message span{
   display: inline-block;
-  width: 45%;
+  max-width: 45%;
   background-color: #DEE2EC;
   word-break: break-all;
+}
+
+.Chat .MessageList .VerticalFigure{
+  transform: translateY(20%);
 }
 
 .Chat .MessageField{
@@ -12280,5 +12295,37 @@ fieldset:disabled .btn {
   fill: inherit;
 }
 
+.Search ul li{
+  height: 70px;
+}
+
+.Search .VerticalFigure{
+  top: 50%;
+  transform: translateY(-40%);
+}
+
+.Search ul li article p{
+  transition: all 0.25s ease;
+  color: #000000;
+  cursor: pointer;
+}
+
+.Search ul li article p:hover{
+  color: #167daca9;
+}
+
+.Search button .OpenChat{
+  width: 25px;
+  height: 25px;
+  transition: all 0.25s ease;
+}
+
+.Search button .OpenChat:hover{
+  fill: #167daca9;
+}
+
+.Search button .OpenChat path {
+  fill: inherit;
+}
 
 /*# sourceMappingURL=bootstrap.css.map */

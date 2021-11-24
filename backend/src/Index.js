@@ -4,6 +4,10 @@ import { createServer } from "http";
 import { Server } from "socket.io";
 import "./Database/db";
 
+//Controllers
+import Users from "./Database/Controllers/Users";
+import Conversations from "./Database/Controllers/Conversation";
+
 require('dotenv').config();
 
 const App = express();
@@ -24,12 +28,18 @@ App.use("/api/Conversation", require("./Routes/Conversation"));
 
 //SocketIO
 SocketIO.on("connection", (Socket) => {
-    Socket.on("JoinConversation", (ConversationID) => {
-        console.log(ConversationID);
+    Socket.on("SetUser", (UserID) => {
+        Socket.join(UserID);
+        Users.UpdateOnline({ID: UserID.UserID, Online: true});
     });
 
-    Socket.on("Message", ({UserID, Message}) => {
-        SocketIO.emit("Message", {UserID, Message});
+    Socket.on("UnsetUser", (UserID) => {
+        Socket.leave(UserID);
+        Users.UpdateOnline({ID: UserID.UserID, Online: false});
+    });
+
+    Socket.on("Message", ({ConversationID, UserID, Message}) => {
+        Conversations.NewMessage({ConversationID, UserID, Message}, SocketIO);
     })
 });
 

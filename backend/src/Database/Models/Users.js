@@ -6,7 +6,9 @@ const UsersModel = new Schema({
     Email: { type: String, index: {unique: true}, require: true },
     Password: { type: String, unique: false, require: true },
     Gender: { type: String, unique: false, require: true },
-    Friends: []
+    ProfileImage: { type: String, unique: false, require: false },
+    Online: { type: Boolean, unique: false, require },
+    Conversations: [String]
 });
 
 module.exports = model("Users", UsersModel);

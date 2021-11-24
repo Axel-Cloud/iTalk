@@ -3,9 +3,10 @@ import {Schema, model} from "mongoose";
 const ConversationModel = new Schema({
     _id: { type: String },
     Conversation: [{
-        UserID: {type: String, unique: false},
-        Message: { type: String, unique: false },
-        Date: { type: Date, unique: false }
+        UserID: {type: String },
+        Message: { type: String },
+        Date: { type: Date },
+        Readed: { type: Boolean }
     }]
 });
 
