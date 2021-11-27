@@ -22,6 +22,7 @@ export default function AsideMenu({ SelectedMenu }){
     const [CompleteName, setCompleteName] = useState("");
     const [ProfileImage, setProfileImage] = useState("")
     const [SearchData, setSearchData] = useState([]);
+    const [Conversations, setConversations] = useState([]);
 
     const dispatch = useDispatch();
     const InputRef = React.createRef();
@@ -43,7 +44,7 @@ export default function AsideMenu({ SelectedMenu }){
                 ID: localStorage.getItem("User")
             }
         }).then((Data) => {
-            console.log(Data.data);
+            setConversations(Data.data);
         });
     }, []);
 
@@ -107,7 +108,7 @@ export default function AsideMenu({ SelectedMenu }){
                             <ConfigIcon className="IconColor"/>
                         </button>
 
-                        <button className="d-block mt-4 ms-auto me-auto border-0" onClick={ Logout }>
+                        <button className="d-block mt-4 ms-auto me-auto border-0 bg-transparent" onClick={ Logout }>
                             <SignOutIcon className="IconColor"/>
                         </button>
                     </div>
@@ -146,7 +147,7 @@ export default function AsideMenu({ SelectedMenu }){
                     <section className="h-75">
                         {
                             SectionType === "Conversation" ?
-                            <ConversationList/>
+                            <ConversationList Conversations={Conversations}/>
                             :
                             SectionType === "Search" ?
                             <Search Data={SearchData}/>   
