@@ -12091,10 +12091,8 @@ fieldset:disabled .btn {
 }
 
 .Messenger .AsideMenu .AsideIcons {
-  position: relative;
-  top: 35%;
-  -webkit-transform: translateY(-35%);
-          transform: translateY(-35%);
+  position: absolute;
+  bottom: 0;
 }
 
 .Messenger .AsideMenu .Menu {
@@ -12110,6 +12108,7 @@ fieldset:disabled .btn {
 }
 
 .Messenger .AsideMenu .Menu button {
+  width: 45%;
   transition: all 0.5s ease;
   fill: #000;
 }
@@ -12272,7 +12271,7 @@ fieldset:disabled .btn {
 }
 
 .Chat .MessageField div{
-  width: 90% !important;
+  width: 95% !important;
 }
 
 .Chat .MessageField div textarea{

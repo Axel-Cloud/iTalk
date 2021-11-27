@@ -29,16 +29,17 @@ App.use("/api/Conversation", require("./Routes/Conversation"));
 //SocketIO
 SocketIO.on("connection", (Socket) => {
     Socket.on("SetUser", (UserID) => {
-        Socket.join(UserID);
-        Users.UpdateOnline({ID: UserID.UserID, Online: true});
+        Socket.join(UserID.UserID);
+        Users.UpdateOnline({ID: UserID.UserID, Online: true});  
     });
 
     Socket.on("UnsetUser", (UserID) => {
-        Socket.leave(UserID);
+        Socket.leave(UserID.UserID);
         Users.UpdateOnline({ID: UserID.UserID, Online: false});
     });
 
     Socket.on("Message", ({ConversationID, EmitterID, RecieverID, Message}) => {
+        console.log("Entro");
         Conversations.NewMessage({ConversationID, EmitterID, RecieverID, Message}, SocketIO);
     });
 });

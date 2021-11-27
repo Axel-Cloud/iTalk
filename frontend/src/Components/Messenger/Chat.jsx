@@ -27,8 +27,13 @@ export default function Chat() {
     }, [MessageInputRef])
 
     useEffect(() => {
+        Socket.on(localStorage.getItem("User"), (NewMessage) => {
+            if(ConversationMessages !== undefined){
+                setConversationMessages([...ConversationMessages, NewMessage]);
+            }
+        });
+
         Socket.on("Message", (NewMessage) => {
-            console.log(NewMessage);
             if(ConversationMessages !== undefined){
                 setConversationMessages([...ConversationMessages, NewMessage]);
             }
@@ -44,7 +49,7 @@ export default function Chat() {
     useEffect(() => {
         Axios.get("http://localhost:3001/api/Conversation", {
             params: {
-                ID: SelectedConversation.ID < localStorage.getItem("User") ? MD5(`${SelectedConversation.ID}${localStorage.getItem("User")}`) : MD5(`${localStorage.getItem("User")}${SelectedConversation.ID}`)
+                ID: SelectedConversation.ID < localStorage.getItem("User") ? MD5(`${SelectedConversation.ID}${localStorage.getItem("User")}`) : SelectedConversation.ID !== "" ? MD5(`${localStorage.getItem("User")}${SelectedConversation.ID}`) : MD5(`${localStorage.getItem("User")}`)
             }
         }).then((Data) => {
             setConversationMessages(Data.data.Conversation);
@@ -77,10 +82,10 @@ export default function Chat() {
         if(e.type === "keypress"){
             e.preventDefault();
         }
-        
+
         if(Message.trim().length > 0){
             MessageInputRef.current.value = "";
-            Socket.emit("Message", {ConversationID: SelectedConversation.ID < localStorage.getItem("User") ? MD5(`${SelectedConversation.ID}${localStorage.getItem("User")}`) : MD5(`${localStorage.getItem("User")}${SelectedConversation.ID}`), EmitterID: localStorage.getItem("User"), RecieverID: SelectedConversation.ID,  Message});
+            Socket.emit("Message", {ConversationID: SelectedConversation.ID < localStorage.getItem("User") ? MD5(`${SelectedConversation.ID}${localStorage.getItem("User")}`) : SelectedConversation.ID !== "" ? MD5(`${localStorage.getItem("User")}${SelectedConversation.ID}`) : MD5(`${localStorage.getItem("User")}`), EmitterID: localStorage.getItem("User"), RecieverID: SelectedConversation.ID,  Message});
         }
     };
 
@@ -113,9 +118,9 @@ export default function Chat() {
             </div>
 
             <div className="d-flex MessageField">
-                <button className="d-block w-auto h-100 border-0">
+                {/* <button className="d-block w-auto h-100 border-0">
                     <ClipIcon className="MessageIcon"/>
-                </button>
+                </button> */}
 
                 <div className="h-100 ms-3 me-2">
                     <textarea className="form-control" rows={TARows} ref={MessageInputRef} onChange={(e) => ChangeMessage(e)} onKeyPress={(e) => {if(e.code === "Enter" || e.code === "NumpadEnter"){SendMessage(e)}}}/>

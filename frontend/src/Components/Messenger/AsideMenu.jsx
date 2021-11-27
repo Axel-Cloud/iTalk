@@ -29,8 +29,6 @@ export default function AsideMenu({ SelectedMenu }){
     const Socket = io("http://localhost:3001");
 
     useEffect(() => {
-        Socket.emit("SetUser", {UserID: localStorage.getItem("User")});
-
         Axios.get("http://localhost:3001/api/Users/Data", {
             params: {
                 ID: localStorage.getItem("User")
@@ -39,7 +37,19 @@ export default function AsideMenu({ SelectedMenu }){
             setCompleteName(`${Data.data.Name} ${Data.data.Lastname}`);
             setProfileImage(Data.data.ProfileImage);
         });
+
+        Axios.get("http://localhost:3001/api/Conversation/Search", {
+            params:{
+                ID: localStorage.getItem("User")
+            }
+        }).then((Data) => {
+            console.log(Data.data);
+        });
     }, []);
+
+    useEffect(() => {
+        Socket.emit("SetUser", {UserID: localStorage.getItem("User")});
+    }, [Socket])
 
     useEffect(() => {
         if(SectionType === "Conversation"){
@@ -88,23 +98,19 @@ export default function AsideMenu({ SelectedMenu }){
                         <img className="d-block w-75" src={iTalkIcon} alt="iTalk Icon" />
                     </figure>
 
-                    <div className="w-100 AsideIcons">
-                        <button className={`d-block w-50 ms-auto me-auto border-0 ${SelectedMenu === "Contacts" ? "SelectedMenu" : "bg-transparent"}`}>
-                            <UsersIcon className="IconColor"/>
-                        </button>
-
-                        <button className={`d-block w-50 mt-4 ms-auto me-auto border-0 ${SelectedMenu === "Conversations" ? "SelectedMenu" : "bg-transparent"}`}>
+                    <div className="w-100 AsideIcons mb-3">
+                        <button className={`d-block mt-4 ms-auto me-auto border-0 ${SelectedMenu === "Conversations" ? "SelectedMenu" : "bg-transparent"}`}>
                             <ChatIcon className="IconColor"/>
                         </button>
 
-                        <button className={`d-block w-50 mt-4 ms-auto me-auto border-0 ${SelectedMenu === "Configuration" ? "SelectedMenu" : "bg-transparent"}`}>
+                        <button className={`d-block mt-4 ms-auto me-auto border-0 ${SelectedMenu === "Configuration" ? "SelectedMenu" : "bg-transparent"}`}>
                             <ConfigIcon className="IconColor"/>
                         </button>
-                    </div>
 
-                    <button className="d-block position-absolute bottom-0 pb-2 w-50 start-50 translate-middle mt-4 ms-auto me-auto border-0 bg-transparent" onClick={ Logout }>
-                        <SignOutIcon className="IconColor"/>
-                    </button>
+                        <button className="d-block mt-4 ms-auto me-auto border-0" onClick={ Logout }>
+                            <SignOutIcon className="IconColor"/>
+                        </button>
+                    </div>
                 </section>
 
                 <section className="col-10 h-100 ps-4 position-relative">

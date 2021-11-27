@@ -1,6 +1,7 @@
 import UsersSchema from "../Models/Users";
 import UsersRecover from "../Models/UsersRecover";
 import NodeMailer from "nodemailer";
+import MD5 from "md5";
 
 const Create = async (Data, UserResponse) => {
   await UsersSchema.create(
@@ -19,7 +20,9 @@ const Create = async (Data, UserResponse) => {
       //#endregion Base64 default images
       Conversations: []
     },
-    (Error) => {
+    (Error, User) => {
+      User.Conversations.push(MD5(User._id.toString()));
+      User.save();
       UserResponse.send(
         Error ? `Error: ${Error.message.includes("dup key: { Email:") ? "Duplicated Email" : "Check Connection"}` : `Created`
       );

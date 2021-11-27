@@ -2,6 +2,7 @@ import {Schema, model} from "mongoose";
 
 const ConversationModel = new Schema({
     _id: { type: String },
+    Users: [],
     Conversation: [{
         UserID: {type: String },
         Message: { type: String },
