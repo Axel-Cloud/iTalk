@@ -2,7 +2,7 @@ const InitialStatus = {
     Status: "Conversation"
 };
 
-export default (state = InitialStatus, {type, Status}) => {
+const AsideMenuReducer = (state = InitialStatus, {type, Status}) => {
     switch(type){
         case "CHANGE_STATUS":
             return {
@@ -13,3 +13,5 @@ export default (state = InitialStatus, {type, Status}) => {
             return state;
     }
 };
+
+export default AsideMenuReducer;

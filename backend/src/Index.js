@@ -39,7 +39,6 @@ SocketIO.on("connection", (Socket) => {
     });
 
     Socket.on("Message", ({ConversationID, EmitterID, RecieverID, Message}) => {
-        console.log("Entro");
         Conversations.NewMessage({ConversationID, EmitterID, RecieverID, Message}, SocketIO);
     });
 });

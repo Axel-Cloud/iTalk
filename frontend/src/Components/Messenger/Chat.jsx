@@ -1,14 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import Axios from "axios";
 import { io } from "socket.io-client";
-import { useSelector } from "react-redux";
+import { ConversationMessages } from "../../Store/ConversationMessages/action";
+import { useSelector, useDispatch } from "react-redux";
+import ScrollToBottom from 'react-scroll-to-bottom';
 import MD5 from "md5";
 
-//Components
-import Messages from "./Message";
-
 //Images
-import { ReactComponent as ClipIcon } from '../../Assets/icons/Clip.svg';
 import { ReactComponent as SendIcon } from '../../Assets/icons/Send.svg';
 
 export default function Chat() {
@@ -16,44 +14,64 @@ export default function Chat() {
     const [TARows, setTARows] = useState(1)
     const [FirstLineLength, setFirstLineLength] = useState(0);
     const [SecondLineLength, setSecondLineLength] = useState(0);
-    const [ConversationMessages, setConversationMessages] = useState([]);
 
     const Socket = io("http://localhost:3001");
+
+    const dispatch = useDispatch();
     const MessageInputRef = React.createRef();
-    const SelectedConversation = useSelector(state => state.SelectedConversationReducer);
+    const SendButtonRef = React.createRef();
+
+    const SelectedConversation = useSelector(state => state.SelectedConversation);
+    const Messages = useSelector(state => state.ConversationMessages.Messages);
+
+    useEffect(() => {
+        Socket.connect();
+
+        Socket.on(localStorage.getItem("User"), (NewMessage) => {
+            if(ConversationMessages !== undefined){
+                if(NewMessage.UserID === SelectedConversation.ID || NewMessage.UserID === localStorage.getItem("User")){
+                    dispatch(ConversationMessages([...Messages, NewMessage]));
+                }
+            }
+        });
+
+        return () => {
+            setTimeout(() => {
+                Socket.disconnect();
+            }, 50);
+        }
+        // eslint-disable-next-line
+    }, [Messages])
 
     useEffect(() => {
         MessageInputRef.current.focus();
     }, [MessageInputRef])
 
     useEffect(() => {
-        Socket.on(localStorage.getItem("User"), (NewMessage) => {
-            if(ConversationMessages !== undefined){
-                setConversationMessages([...ConversationMessages, NewMessage]);
-            }
-        });
-
-        Socket.on("Message", (NewMessage) => {
-            if(ConversationMessages !== undefined){
-                setConversationMessages([...ConversationMessages, NewMessage]);
-            }
-        });
-    }, [Socket]);
-
-    useEffect(() => {
-        document.documentElement.style.setProperty("--MessageList-Height", TARows === 1 ? "94%" : TARows === 2 ? "91.5%" : "89%");
+        document.documentElement.style.setProperty("--MessageList-Height", TARows === 1 ? "94%" : TARows === 2 ? "91.5%" : "89%");  
         document.documentElement.style.setProperty("--MessageField-Height", TARows === 1 ? "6%" : TARows === 2 ? "8.5%" : "11%");
         document.documentElement.style.setProperty("--MessageIcon-Height", TARows === 1 ? "37%" : TARows === 2 ? "27%" : "22.5%");
     }, [TARows]);
 
     useEffect(() => {
+        if(SelectedConversation.ID === MD5(localStorage.getItem("User"))){
+            MessageInputRef.current.disabled = true;
+            SendButtonRef.current.disabled = true;
+        }
+        else{
+            MessageInputRef.current.disabled = false;
+            SendButtonRef.current.disabled = false;
+        }
+
         Axios.get("http://localhost:3001/api/Conversation", {
             params: {
-                ID: SelectedConversation.ID < localStorage.getItem("User") ? MD5(`${SelectedConversation.ID}${localStorage.getItem("User")}`) : SelectedConversation.ID !== "" ? MD5(`${localStorage.getItem("User")}${SelectedConversation.ID}`) : MD5(`${localStorage.getItem("User")}`)
+                ID: SelectedConversation.ID === MD5(localStorage.getItem("User")) ? MD5(localStorage.getItem("User")) : SelectedConversation.ID < localStorage.getItem("User") ? MD5(`${SelectedConversation.ID}${localStorage.getItem("User")}`) : MD5(`${localStorage.getItem("User")}${SelectedConversation.ID}`) 
             }
         }).then((Data) => {
-            setConversationMessages(Data.data.Conversation);
+            dispatch(ConversationMessages(Data.data.Conversation));
         });
+
+        // eslint-disable-next-line
     }, [SelectedConversation]);
 
     const ChangeMessage = (e) => {
@@ -85,7 +103,7 @@ export default function Chat() {
 
         if(Message.trim().length > 0){
             MessageInputRef.current.value = "";
-            Socket.emit("Message", {ConversationID: SelectedConversation.ID < localStorage.getItem("User") ? MD5(`${SelectedConversation.ID}${localStorage.getItem("User")}`) : SelectedConversation.ID !== "" ? MD5(`${localStorage.getItem("User")}${SelectedConversation.ID}`) : MD5(`${localStorage.getItem("User")}`), EmitterID: localStorage.getItem("User"), RecieverID: SelectedConversation.ID,  Message});
+            Socket.emit("Message", {ConversationID: SelectedConversation.ID === "" ? MD5(localStorage.getItem("User")) : SelectedConversation.ID < localStorage.getItem("User") ? MD5(`${SelectedConversation.ID}${localStorage.getItem("User")}`) : MD5(`${localStorage.getItem("User")}${SelectedConversation.ID}`), EmitterID: localStorage.getItem("User"), RecieverID: SelectedConversation.ID,  Message});
         }
     };
 
@@ -105,28 +123,41 @@ export default function Chat() {
 
                 <hr className="mt-0 me-4"/>
 
-                <section>
+                <ScrollToBottom className="Messages">
                     {
-                        ConversationMessages !== undefined &&
-                        ConversationMessages.map((message) => {
+                        Messages.map((message, Index) => {
                             return (
-                                <Messages key={message._id} Message={message.Message} UserID={message.UserID}/>
+                                <div key={message._id} className={`d-flex ${message.UserID === localStorage.getItem("User") ? "justify-content-end" : "justify-content-start"} ${Index === 0 ? "mt-1" : Messages[Index - 1].UserID === Messages[Index].UserID ? "mt-2" : "mt-4"} w-100 Message`}>
+                                    {
+                                        message.UserID !== localStorage.getItem("User") &&
+                                        <figure className="h-100 position-relative VerticalFigure me-2">
+                                            <img className="w-100 h-100 rounded-circle" src={`data:image/png;base64,${SelectedConversation.ProfileImage}`} alt="" />
+                                        </figure>
+                                    }
+
+                                    <span id={`Message-${message._id}`} className={`p-2 ps-3 pe-3`}>
+                                        <p>{message.Message}</p>
+                                    </span>
+
+                                    {
+                                        message.UserID === localStorage.getItem("User") &&
+                                        <figure className="h-100 position-relative VerticalFigure ms-2 me-2">
+                                            <img className="w-100 h-100 rounded-circle" src={`data:image/png;base64,${SelectedConversation.ProfileImage}`} alt="" />
+                                        </figure>
+                                    }
+                                </div>
                             );
                         })
                     }
-                </section>
+                </ScrollToBottom>
             </div>
 
             <div className="d-flex MessageField">
-                {/* <button className="d-block w-auto h-100 border-0">
-                    <ClipIcon className="MessageIcon"/>
-                </button> */}
-
                 <div className="h-100 ms-3 me-2">
                     <textarea className="form-control" rows={TARows} ref={MessageInputRef} onChange={(e) => ChangeMessage(e)} onKeyPress={(e) => {if(e.code === "Enter" || e.code === "NumpadEnter"){SendMessage(e)}}}/>
                 </div>
 
-                <button className="d-block w-auto h-100 border-0 me-4" onClick={(e) => SendMessage(e)}>
+                <button className="d-block w-auto h-100 border-0 me-4" ref={SendButtonRef} onClick={(e) => SendMessage(e)}>
                     <SendIcon className="MessageIcon SendIcon"/>
                 </button>
             </div>

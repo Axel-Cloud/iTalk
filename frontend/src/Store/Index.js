@@ -1,10 +1,12 @@
 import { createStore, combineReducers } from "redux";
-import SelectedConversationReducer from "./SelectedConversation/reducer";
+import SelectedConversation from "./SelectedConversation/reducer";
 import StatusAsideMenu from "./AsideMenuStatus/reducer";
+import ConversationMessages from "./ConversationMessages/reducer";
 
 const Reducers = combineReducers({
-    SelectedConversationReducer,
+    SelectedConversation,
     StatusAsideMenu,
+    ConversationMessages,
 });
 
 const Store = createStore(Reducers, window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__());

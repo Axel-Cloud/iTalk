@@ -12185,10 +12185,12 @@ fieldset:disabled .btn {
 
 .Messenger .ConversationList:hover {
   color: rgba(131, 131, 131, 0.5);
+  cursor: pointer;
 }
 
 .Messenger .ConversationList li {
   height: 80px;
+  padding-top: 8px;
   overflow: hidden;
   transition: all 0.5s ease;
 }
@@ -12196,7 +12198,6 @@ fieldset:disabled .btn {
 .Messenger .ConversationList li:hover {
   background-color: #E5E5E5;
 }
-
 
 .Messenger .ConversationList li article figure{
   top: 50%;
@@ -12253,6 +12254,30 @@ fieldset:disabled .btn {
 
 .Chat .MessageList .VerticalFigure{
   transform: translateY(20%);
+}
+
+.Chat .MessageList .Messages{
+  height: 90%;
+  overflow: scroll;
+}
+
+.Chat .MessageList .Messages figure{
+  height: 45px;
+  width: 45px;
+}
+
+.Chat .MessageList .Messages .Message span{
+  border-radius: 35px;
+}
+
+.Chat .MessageList .Messages .Message span p{
+  position: relative;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.Chat .MessageList .Messages .Message .OneLineMessage{
+  height: 40px;
 }
 
 .Chat .MessageField{

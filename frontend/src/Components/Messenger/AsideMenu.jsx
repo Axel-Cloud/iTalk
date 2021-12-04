@@ -12,12 +12,12 @@ import Search from "./Search";
 import iTalkIcon from "../../Assets/iTalk_Icon.png";
 
 /* Icons */
-import { ReactComponent as UsersIcon } from '../../Assets/icons/Users.svg';
 import { ReactComponent as ChatIcon } from '../../Assets/icons/Chat.svg';
 import { ReactComponent as ConfigIcon } from '../../Assets/icons/Config.svg';
 import { ReactComponent as SignOutIcon } from '../../Assets/icons/SignOut.svg';
+import { SelectedConversation } from '../../Store/SelectedConversation/action';
 
-export default function AsideMenu({ SelectedMenu }){
+export default function AsideMenu(){
     //Search, conversation list, and configuration
     const [CompleteName, setCompleteName] = useState("");
     const [ProfileImage, setProfileImage] = useState("")
@@ -37,6 +37,7 @@ export default function AsideMenu({ SelectedMenu }){
         }).then((Data) => {
             setCompleteName(`${Data.data.Name} ${Data.data.Lastname}`);
             setProfileImage(Data.data.ProfileImage);
+            dispatch(SelectedConversation(Data.data.LastReadedConversation));
         });
 
         Axios.get("http://localhost:3001/api/Conversation/Search", {
@@ -46,6 +47,8 @@ export default function AsideMenu({ SelectedMenu }){
         }).then((Data) => {
             setConversations(Data.data);
         });
+
+        // eslint-disable-next-line
     }, []);
 
     useEffect(() => {
@@ -56,7 +59,7 @@ export default function AsideMenu({ SelectedMenu }){
         if(SectionType === "Conversation"){
             InputRef.current.value = "";
         }
-    }, [SectionType])
+    }, [SectionType, InputRef])
 
     window.onbeforeunload = () => {
         if(localStorage.getItem("User") !== null){
@@ -100,11 +103,11 @@ export default function AsideMenu({ SelectedMenu }){
                     </figure>
 
                     <div className="w-100 AsideIcons mb-3">
-                        <button className={`d-block mt-4 ms-auto me-auto border-0 ${SelectedMenu === "Conversations" ? "SelectedMenu" : "bg-transparent"}`}>
+                        <button className={`d-block mt-4 ms-auto me-auto border-0 ${SectionType === "Conversations" ? "SelectedMenu" : "bg-transparent"}`}>
                             <ChatIcon className="IconColor"/>
                         </button>
 
-                        <button className={`d-block mt-4 ms-auto me-auto border-0 ${SelectedMenu === "Configuration" ? "SelectedMenu" : "bg-transparent"}`}>
+                        <button className={`d-block mt-4 ms-auto me-auto border-0 ${SectionType === "Configuration" ? "SelectedMenu" : "bg-transparent"}`}>
                             <ConfigIcon className="IconColor"/>
                         </button>
 

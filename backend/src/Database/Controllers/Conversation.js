@@ -11,19 +11,38 @@ const SearchConversations = async (Data, ConversationResponse) => {
                 if(!Error){
                     for(let x = 0; x < Conversations.length; x++){
                         let Conversation = Conversations[x];
-
                         const SearchUsers = async () => {
                             let SecondUserID = Conversation.Users.filter(User => User !== Data.query.ID)[0];
                             
                             await UserSchema.findById(SecondUserID === "" ? Data.query.ID : SecondUserID, "_id Name Lastname ProfileImage Online", (Error, UserAux) => {
                                 if(!Error){
-                                    for(let y = 0; y < Conversation.Conversation.length; y++){
-                                        console.log(Conversation);
+                                    let LastMessage = "", LastMessageDate, UnreadedMessages = 0;
+
+                                    LastMessage = Conversation.Conversation[Conversation.Conversation.length - 1].Message;
+                                    LastMessageDate = Conversation.Conversation[Conversation.Conversation.length - 1].Date;
+
+                                    for(let y = Conversation.Conversation.length - 1; y >= 0; y--){
+                                        if(Conversation.Conversation[y].UserID === SecondUserID){
+                                            if(Conversation.Conversation[y].Readed === false){
+                                                UnreadedMessages += 1;
+                                            }
+                                            else{
+                                                break;
+                                            }
+                                        }
+                                        else{
+                                            break;
+                                        }
                                     }
 
                                     if(UserAux._id.toString() !== Data.query.ID.toString()){
                                         Conversation = {
                                             ...Conversation._doc,
+                                            Conversation: {
+                                                LastMessage,
+                                                LastMessageDate,
+                                                UnreadedMessages
+                                            },
                                             SecondUser: {
                                                 _id: UserAux._id,
                                                 Name: UserAux.Name,
@@ -36,6 +55,11 @@ const SearchConversations = async (Data, ConversationResponse) => {
                                     else{
                                         Conversation = {
                                             ...Conversation._doc,
+                                            Conversation: {
+                                                LastMessage,
+                                                LastMessageDate,
+                                                UnreadedMessages
+                                            },
                                             SecondUser: {
                                                 _id: MD5(Data.query.ID.toString()),
                                                 Name: "iTalk",
@@ -60,7 +84,7 @@ const SearchConversations = async (Data, ConversationResponse) => {
                             });
                         };
 
-                        SearchUsers();
+                        await SearchUsers();
                     }
                 }
                 else{

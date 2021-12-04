@@ -6,7 +6,7 @@ const initialState = {
     ProfileImage: ""
 }
 
-export default (state = initialState, {type, ID, Name, Lastname, Online, ProfileImage}) => {
+const SelectedConversationReducer = (state = initialState, {type, ID, Name, Lastname, Online, ProfileImage}) => {
     switch(type){
         case "CHANGE_CONVERSATION":
             return {
@@ -20,4 +20,6 @@ export default (state = initialState, {type, ID, Name, Lastname, Online, Profile
         default:
             return state;       
     }
-}
+};
+
+export default SelectedConversationReducer;
