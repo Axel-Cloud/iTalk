@@ -8,6 +8,9 @@ ConversationRouter.get("/", (Request, Response) => {
                    })
                    .get("/Search", (Request, Response) => {
                         Conversations.SearchConversations(Request, Response);
+                   })
+                   .put("/", (Request, Response) => {
+                         Conversations.MessagesReaded(Request, Response);
                    });
 
 module.exports = ConversationRouter;

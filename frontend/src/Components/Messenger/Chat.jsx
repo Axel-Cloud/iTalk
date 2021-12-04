@@ -23,7 +23,7 @@ export default function Chat() {
 
     const SelectedConversation = useSelector(state => state.SelectedConversation);
     const Messages = useSelector(state => state.ConversationMessages.Messages);
-
+    
     useEffect(() => {
         Socket.connect();
 
@@ -65,11 +65,18 @@ export default function Chat() {
 
         Axios.get("http://localhost:3001/api/Conversation", {
             params: {
-                ID: SelectedConversation.ID === MD5(localStorage.getItem("User")) ? MD5(localStorage.getItem("User")) : SelectedConversation.ID < localStorage.getItem("User") ? MD5(`${SelectedConversation.ID}${localStorage.getItem("User")}`) : MD5(`${localStorage.getItem("User")}${SelectedConversation.ID}`) 
+                ID: SelectedConversation.ID === MD5(localStorage.getItem("User")) ? MD5(localStorage.getItem("User")) : SelectedConversation.ID < localStorage.getItem("User") ? MD5(`${SelectedConversation.ID}${localStorage.getItem("User")}`) : MD5(`${localStorage.getItem("User")}${SelectedConversation.ID}`)
             }
         }).then((Data) => {
             dispatch(ConversationMessages(Data.data.Conversation));
         });
+
+        // Axios.put("http://localhost:3001/api/Conversation", {
+        //     ConversationID: SelectedConversation.ID === MD5(localStorage.getItem("User")) ? MD5(localStorage.getItem("User")) : SelectedConversation.ID < localStorage.getItem("User") ? MD5(`${SelectedConversation.ID}${localStorage.getItem("User")}`) : MD5(`${localStorage.getItem("User")}${SelectedConversation.ID}`),
+        //     UserID: localStorage.getItem("User")
+        // }).then((Data) => {
+        //     console.log(Data.data);
+        // });
 
         // eslint-disable-next-line
     }, [SelectedConversation]);
@@ -125,6 +132,7 @@ export default function Chat() {
 
                 <ScrollToBottom className="Messages">
                     {
+                        Messages !== null &&
                         Messages.map((message, Index) => {
                             return (
                                 <div key={message._id} className={`d-flex ${message.UserID === localStorage.getItem("User") ? "justify-content-end" : "justify-content-start"} ${Index === 0 ? "mt-1" : Messages[Index - 1].UserID === Messages[Index].UserID ? "mt-2" : "mt-4"} w-100 Message`}>

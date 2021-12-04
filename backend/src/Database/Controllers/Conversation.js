@@ -112,7 +112,6 @@ const Recieve = async (Data, ConversationResponse) => {
 const NewMessage = async ({ConversationID, EmitterID, RecieverID, Message}, Socket) => {
     await ConversationSchema.findById(ConversationID, async (Error, Conversation) => {
         if(Conversation !== null){
-            //Falta retornar el id del mensaje
             let NewConversation = Conversation.Conversation;
             let NewMessage = {UserID: EmitterID, Message, Date: new Date(), Readed: false};
             NewConversation.push(NewMessage);
@@ -157,4 +156,22 @@ const NewMessage = async ({ConversationID, EmitterID, RecieverID, Message}, Sock
     })
 };
 
-export default {SearchConversations, Recieve, NewMessage};
+const MessagesReaded = async (Data, ConversationResponse) => {
+    console.log(Data.body)
+    await ConversationSchema.findById(Data.body.ConversationID, (Error, Conversation) => {
+        if(!Error){
+            // if(Conversation.Conversation[Conversation.Conversation.length - 1].UserID !== Data.body.UserID){
+            //     for(let x = 0; x < Conversation.Conversation.length; x++){
+            //         Conversation.Conversation[x].Readed = true;
+            //     }
+
+            //     Conversation.save();
+            // }
+        }
+        else{
+            ConversationResponse.send(`Error: ${Error.message}`);
+        }
+    });
+};
+
+export default {SearchConversations, Recieve, NewMessage, MessagesReaded};
