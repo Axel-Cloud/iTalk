@@ -157,16 +157,21 @@ const NewMessage = async ({ConversationID, EmitterID, RecieverID, Message}, Sock
 };
 
 const MessagesReaded = async (Data, ConversationResponse) => {
-    console.log(Data.body)
     await ConversationSchema.findById(Data.body.ConversationID, (Error, Conversation) => {
         if(!Error){
-            // if(Conversation.Conversation[Conversation.Conversation.length - 1].UserID !== Data.body.UserID){
-            //     for(let x = 0; x < Conversation.Conversation.length; x++){
-            //         Conversation.Conversation[x].Readed = true;
-            //     }
+            if(Conversation !== null && Conversation.Conversation[Conversation.Conversation.length - 1].UserID !== Data.body.UserID){
+                for(let x = Conversation.Conversation.length - 1; x >= 0; x--){
+                    if(Conversation.Conversation[x].Readed === false){
+                        Conversation.Conversation[x].Readed = true;
+                    }
+                    else{
+                        break;
+                    }
+                }
 
-            //     Conversation.save();
-            // }
+                Conversation.save();
+                ConversationResponse.send(`Done`);
+            }
         }
         else{
             ConversationResponse.send(`Error: ${Error.message}`);

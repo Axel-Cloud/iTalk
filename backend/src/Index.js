@@ -20,7 +20,7 @@ App.set("Port", process.env.Port || 3003);
 
 /* Middlewares */
 App.use(Cors());
-App.use(express.json());
+App.use(express.json({limit: '2mb'}));
 
 /* Server Routes */
 App.use("/api/Users", require("./Routes/Users"));

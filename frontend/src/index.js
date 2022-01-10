@@ -30,6 +30,11 @@ import ResetPassword_en from "./Translations/en/ResetPassword.json";
 import ResetPassword_es from "./Translations/es/ResetPassword.json";
 import ResetPassword_fr from "./Translations/fr/ResetPassword.json";
 
+//Messenger
+import Messenger_en from "./Translations/en/Messenger.json";
+import Messenger_es from "./Translations/es/Messenger.json";
+import Messenger_fr from "./Translations/fr/Messenger.json";
+
 /* End Translations */
 
 i18next.init({
@@ -40,19 +45,22 @@ i18next.init({
       Login: Login_en,
       SignUp: SignUp_en,
       Forgot: ForgotPassword_en,
-      Reset: ResetPassword_en
+      Reset: ResetPassword_en,
+      Messenger: Messenger_en
     },
     es: {
       Login: Login_es,
       SignUp: SignUp_es,
       Forgot: ForgotPassword_es,
-      Reset: ResetPassword_es
+      Reset: ResetPassword_es,
+      Messenger: Messenger_es
     },
     fr: {
       Login: Login_fr,
       SignUp: SignUp_fr,
       Forgot: ForgotPassword_fr,
-      Reset: ResetPassword_fr
+      Reset: ResetPassword_fr,
+      Messenger: Messenger_fr
     }
   }
 });

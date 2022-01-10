@@ -12142,6 +12142,36 @@ fieldset:disabled .btn {
   height: 56px;
 }
 
+.Messenger .ProfileImageConfigSize {
+  width: 168px;
+  height: 168px;
+}
+
+.Messenger .ProfileImageEditButton {
+  position: relative;
+  display: block;
+  width: 100%;
+  font-size: medium;
+  font-weight: bold;
+  background-color: #ffffff;
+  color: #000;
+  opacity: 0.75;
+  margin: auto;
+  bottom: 35px;
+  transition: all ease-in-out 0.25s;
+  border: none;
+  outline: none;
+}
+
+.Messenger .ProfileImageEditButton:hover {
+  opacity: 0.85;
+}
+
+.Messenger .UpdateConfig{
+  position: relative;
+  bottom: 30px;
+}
+
 .Messenger .ProfileStatusGreen {
   position: relative;
   width: 15px;
@@ -12153,11 +12183,11 @@ fieldset:disabled .btn {
   margin-left: auto;
 }
 
-.Messenger .ProfileStatusRed {
+.Messenger .ProfileStatusGray {
   position: relative;
   width: 15px;
   height: 15px;
-  background-color: #CE5B5B;
+  background-color: #CCCCCC;
   bottom: 15px;
   margin: 0;
   border: 2px solid white;
@@ -12359,6 +12389,25 @@ fieldset:disabled .btn {
 
 .Search button .OpenChat path {
   fill: inherit;
+}
+
+.ProfileImageModal figure section{
+  height: 275px;
+}
+
+.ProfileImageModal figure section div{
+  position: relative;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  transform: scale(5);
+  top: 50%;
+}
+
+.ProfileImageModal figure img{
+  min-height: 200px;
+  max-width: 275px;
+  max-height: 275px;
 }
 
 /*# sourceMappingURL=bootstrap.css.map */

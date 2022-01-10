@@ -303,4 +303,16 @@ const CancelResetPass = async (Data, UserResponse) => {
   });
 };
 
-module.exports = { Create, UserData, Search, Login, ForgotPass, UpdateOnline, ResetPass, CancelResetPass };
+const UpdateProfileImage = async (Data, UserResponse) => {
+  await UsersSchema.findOneAndUpdate({"_id": Data.ID}, {$set: {ProfileImage: Data.ProfileImage}}, (Error) => {
+    UserResponse.send(Error ? `Error: ${Error.message}` : "Updated");
+  });
+};
+
+const UpdateUserInfo = async (Data, UserResponse) => {
+  await UsersSchema.findOneAndUpdate({"_id": Data.ID}, {$set: {ProfileImage: Data.ProfileImage}}, (Error) => {
+    UserResponse.send(Error ? `Error: ${Error.message}` : "Updated");
+  });
+};
+
+module.exports = { Create, UserData, Search, Login, ForgotPass, UpdateOnline, ResetPass, CancelResetPass, UpdateProfileImage, UpdateUserInfo };

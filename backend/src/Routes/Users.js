@@ -31,6 +31,13 @@ UsersRouter.get("/", (Request, Response) => {
             })
             .put("/Reset/Cancel", (Request, Response) => {
                 Users.CancelResetPass(Request.body, Response);
+            })
+            /* PI = Profile Image */
+            .put("/UpdatePI", (Request, Response) => {
+                Users.UpdateProfileImage(Request.body, Response);
+            })
+            .put("/UpdateUserInfo", (Request, Response) => {
+                
             });
 
 module.exports = UsersRouter;

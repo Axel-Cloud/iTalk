@@ -1,13 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import Axios from "axios";
 import { io } from "socket.io-client";
-import { ConversationMessages } from "../../Store/ConversationMessages/action";
-import { useSelector, useDispatch } from "react-redux";
 import ScrollToBottom from 'react-scroll-to-bottom';
+import { useTranslation } from "react-i18next";
 import MD5 from "md5";
 
 //Images
 import { ReactComponent as SendIcon } from '../../Assets/icons/Send.svg';
+
+/* Redux */
+import { useSelector, useDispatch } from "react-redux";
+import { ConversationMessages } from "../../Store/ConversationMessages/action";
+import { UpdateConversations } from "../../Store/Conversations/action";
 
 export default function Chat() {
     const [Message, setMessage] = useState("");
@@ -18,20 +22,61 @@ export default function Chat() {
     const Socket = io("http://localhost:3001");
 
     const dispatch = useDispatch();
+    const { t } = useTranslation("Messenger");
     const MessageInputRef = React.createRef();
     const SendButtonRef = React.createRef();
 
     const SelectedConversation = useSelector(state => state.SelectedConversation);
+    const ProfileImage = useSelector(state => `${state.UserInfo.ProfileImage}`);
+
     const Messages = useSelector(state => state.ConversationMessages.Messages);
     
     useEffect(() => {
         Socket.connect();
 
         Socket.on(localStorage.getItem("User"), (NewMessage) => {
-            if(ConversationMessages !== undefined){
-                if(NewMessage.UserID === SelectedConversation.ID || NewMessage.UserID === localStorage.getItem("User")){
+            if(NewMessage.UserID === SelectedConversation.ID){
+                if(Messages !== undefined){
                     dispatch(ConversationMessages([...Messages, NewMessage]));
                 }
+                else{
+                    dispatch(ConversationMessages([NewMessage]));
+                }
+                
+                Axios.put("http://localhost:3001/api/Conversation", {
+                    ConversationID: SelectedConversation.ID < localStorage.getItem("User") ? MD5(`${SelectedConversation.ID}${localStorage.getItem("User")}`) : MD5(`${localStorage.getItem("User")}${SelectedConversation.ID}`),
+                    UserID: localStorage.getItem("User")
+                }).then(() => {
+                    Axios.get("http://localhost:3001/api/Conversation/Search", {
+                    params:{
+                        ID: localStorage.getItem("User")
+                    }}).then((Data) => {
+                        dispatch(UpdateConversations(Data.data));
+                    });
+                });
+            }
+            else if(NewMessage.UserID === localStorage.getItem("User")){
+                if(Messages !== undefined){
+                    dispatch(ConversationMessages([...Messages, NewMessage]));
+                }
+                else{
+                    dispatch(ConversationMessages([NewMessage]));
+                }
+                
+                Axios.get("http://localhost:3001/api/Conversation/Search", {
+                    params:{
+                        ID: localStorage.getItem("User")
+                    }}).then((Data) => {
+                        dispatch(UpdateConversations(Data.data));
+                });
+            }
+            else{
+                Axios.get("http://localhost:3001/api/Conversation/Search", {
+                    params:{
+                        ID: localStorage.getItem("User")
+                    }}).then((Data) => {
+                        dispatch(UpdateConversations(Data.data));
+                });
             }
         });
 
@@ -61,6 +106,13 @@ export default function Chat() {
         else{
             MessageInputRef.current.disabled = false;
             SendButtonRef.current.disabled = false;
+
+            if(SelectedConversation.ID !== ""){
+                Axios.put("http://localhost:3001/api/Conversation", {
+                    ConversationID: SelectedConversation.ID === MD5(localStorage.getItem("User")) ? MD5(localStorage.getItem("User")) : SelectedConversation.ID < localStorage.getItem("User") ? MD5(`${SelectedConversation.ID}${localStorage.getItem("User")}`) : MD5(`${localStorage.getItem("User")}${SelectedConversation.ID}`),
+                    UserID: localStorage.getItem("User")
+                });
+            }
         }
 
         Axios.get("http://localhost:3001/api/Conversation", {
@@ -70,13 +122,6 @@ export default function Chat() {
         }).then((Data) => {
             dispatch(ConversationMessages(Data.data.Conversation));
         });
-
-        // Axios.put("http://localhost:3001/api/Conversation", {
-        //     ConversationID: SelectedConversation.ID === MD5(localStorage.getItem("User")) ? MD5(localStorage.getItem("User")) : SelectedConversation.ID < localStorage.getItem("User") ? MD5(`${SelectedConversation.ID}${localStorage.getItem("User")}`) : MD5(`${localStorage.getItem("User")}${SelectedConversation.ID}`),
-        //     UserID: localStorage.getItem("User")
-        // }).then((Data) => {
-        //     console.log(Data.data);
-        // });
 
         // eslint-disable-next-line
     }, [SelectedConversation]);
@@ -121,10 +166,15 @@ export default function Chat() {
                     <article className="d-flex align-items-center h-100 w-100 ms-1">
                         <figure className="h-100 position-relative VerticalFigure">
                             <img className="ProfileImageSize rounded-circle" src={`data:image/png;base64,${SelectedConversation.ProfileImage}`} alt="" />
-                            <div className={`${SelectedConversation.Online ? "ProfileStatusGreen" : "ProfileStatusRed"} rounded-circle`}></div>
+                            <div className={`${SelectedConversation.Online ? "ProfileStatusGreen" : "ProfileStatusGray"} rounded-circle`}></div>
                         </figure>
 
-                        <p className="ps-0 mb-0 ms-3 fw-bold fs-5">{`${SelectedConversation.Name} ${SelectedConversation.Lastname}`}</p>
+                        {
+                            SelectedConversation.ID === MD5(localStorage.getItem("User")) ?
+                            <p className="ps-0 mb-0 ms-3 fw-bold fs-5">{t("iTalkSupport")}</p>
+                            :
+                            <p className="ps-0 mb-0 ms-3 fw-bold fs-5">{`${SelectedConversation.Name} ${SelectedConversation.Lastname}`}</p>
+                        }
                     </article>
                 </section>
 
@@ -132,7 +182,7 @@ export default function Chat() {
 
                 <ScrollToBottom className="Messages">
                     {
-                        Messages !== null &&
+                        Messages !== null && Messages !== undefined &&
                         Messages.map((message, Index) => {
                             return (
                                 <div key={message._id} className={`d-flex ${message.UserID === localStorage.getItem("User") ? "justify-content-end" : "justify-content-start"} ${Index === 0 ? "mt-1" : Messages[Index - 1].UserID === Messages[Index].UserID ? "mt-2" : "mt-4"} w-100 Message`}>
@@ -148,6 +198,15 @@ export default function Chat() {
                                     </span>
 
                                     {
+                                        MD5(localStorage.getItem("User")) !== SelectedConversation.ID &&
+                                        message.UserID === localStorage.getItem("User") &&
+                                        <figure className="h-100 position-relative VerticalFigure ms-2 me-2">
+                                            <img className="w-100 h-100 rounded-circle" src={`data:image/png;base64,${ProfileImage}`} alt="" />
+                                        </figure>
+                                    }
+
+                                    {
+                                        MD5(localStorage.getItem("User")) === SelectedConversation.ID &&
                                         message.UserID === localStorage.getItem("User") &&
                                         <figure className="h-100 position-relative VerticalFigure ms-2 me-2">
                                             <img className="w-100 h-100 rounded-circle" src={`data:image/png;base64,${SelectedConversation.ProfileImage}`} alt="" />
