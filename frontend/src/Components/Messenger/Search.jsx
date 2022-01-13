@@ -16,6 +16,7 @@ export default function Search(props){
     }, [props]);
 
     const ChangeConversation = (User) => {
+        User.isSelected = true;
         dispatch(SelectedConversation(User));
         dispatch(AsideStatus("Conversation"));
     }

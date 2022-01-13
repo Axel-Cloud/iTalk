@@ -1,0 +1,15 @@
+{
+    "Language": "English",
+    "EditProfileImage": "Edit",
+    "FirstNameInput": "First Name",
+    "LastnameInput": "Last Name",
+    "Email": "Email",
+    "Password": "Password",
+    "ConfirmPassword": "Confirm Password",
+    "UpdateInformation": "Update Data",
+    "SignOut": "Sign Out",
+    "ProfileImageModalTitle": "Edit Profile Image",
+    "ModalCancel": "Cancel",
+    "LoadImage": "Load Image",
+    "SaveChanges": "Save Changes"
+}

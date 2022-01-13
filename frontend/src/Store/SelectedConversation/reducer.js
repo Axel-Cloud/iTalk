@@ -3,10 +3,11 @@ const initialState = {
     Name: "",
     Lastname: "",
     Online: false,
+    isSelected: false,
     ProfileImage: ""
 }
 
-const SelectedConversationReducer = (state = initialState, {type, ID, Name, Lastname, Online, ProfileImage}) => {
+const SelectedConversationReducer = (state = initialState, {type, ID, Name, Lastname, Online, isSelected, ProfileImage}) => {
     switch(type){
         case "CHANGE_CONVERSATION":
             return {
@@ -15,6 +16,7 @@ const SelectedConversationReducer = (state = initialState, {type, ID, Name, Last
                 Name,
                 Lastname,
                 Online,
+                isSelected,
                 ProfileImage
             }
         default:

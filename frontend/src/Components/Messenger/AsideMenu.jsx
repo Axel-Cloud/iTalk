@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from "react-redux";
+import ScreenDimensions from "../../Others/useScreenDimensions";
 import Axios from 'axios';
 import { io } from "socket.io-client";
 import { Modal } from "react-bootstrap";
@@ -11,10 +12,8 @@ import ConversationList from './ConversationList';
 import Search from "./Search";
 import Configuration from "./Configuration";
 
-/* Images */
-import iTalkIcon from "../../Assets/iTalk_Icon.png";
-
 /* Icons */
+import iTalkIcon from "../../Assets/iTalk_Icon.png";
 import { ReactComponent as ChatIcon } from '../../Assets/icons/Chat.svg';
 import { ReactComponent as ConfigIcon } from '../../Assets/icons/Config.svg';
 import { ReactComponent as SignOutIcon } from '../../Assets/icons/SignOut.svg';
@@ -36,6 +35,7 @@ export default function AsideMenu(){
     const { t } = useTranslation("Messenger");
     const InputRef = React.createRef();
 
+    const { ScreenWidth } = ScreenDimensions();
     const SectionType = useSelector(state => state.StatusAsideMenu.Status);
     const FirstName = useSelector(state => state.UserInfo.Name);
     const Lastname = useSelector(state => state.UserInfo.Lastname);
@@ -49,7 +49,8 @@ export default function AsideMenu(){
                 ID: localStorage.getItem("User")
             }
         }).then((Data) => {
-            dispatch(UpdateUserInfo({Name: Data.data.Name, Lastname: Data.data.Lastname, ProfileImage: Data.data.ProfileImage}));
+            dispatch(UpdateUserInfo({Name: Data.data.Name, Lastname: Data.data.Lastname, Email: Data.data.Email, ProfileImage: Data.data.ProfileImage}));
+            Data.data.LastReadedConversation.isSelected = false;
             dispatch(SelectedConversation(Data.data.LastReadedConversation));
         });
 
@@ -63,6 +64,15 @@ export default function AsideMenu(){
 
         // eslint-disable-next-line
     }, []);
+
+    useEffect(() => {
+        if(ScreenWidth >= 880){
+            document.documentElement.style.setProperty("--Aside-Menu-Size", "490px");
+        }
+        else{
+            document.documentElement.style.setProperty("--Aside-Menu-Size", "100%");
+        }
+    }, [ScreenWidth])
 
     useEffect(() => {
         Socket.emit("SetUser", {UserID: localStorage.getItem("User")});
@@ -120,7 +130,6 @@ export default function AsideMenu(){
     }
     
     const LoadProfileImage = (Image) => {
-        console.log(Image)
         if(Image.type.includes("image") && (Image.size / 1000000) <= 0.512){
             setLoadingProfileImage(true);
 
@@ -167,29 +176,31 @@ export default function AsideMenu(){
     }
     
     return(
-        <aside className="w-100 vh-100 container-fluid AsideMenu">
+        <aside className="vh-100 container-fluid AsideMenu">
             <div className="row h-100">
-                <section className="col-2 p-0 position-relative Menu mt-auto mb-auto">
-                    <figure className="d-flex w-100 justify-content-center m-0 mt-3">
-                        <img className="d-block w-75" src={iTalkIcon} alt="iTalk Icon" />
-                    </figure>
+                {
+                    ScreenWidth >= 880 &&
+                    <section className="col-2 p-0 position-relative Menu mt-auto mb-auto">
+                        <figure className="d-flex w-100 justify-content-center m-0 mt-3">
+                            <img className="d-block w-75" src={iTalkIcon} alt="iTalk Icon" />
+                        </figure>
+                        <div className="w-100 AsideIcons mb-3">
+                            <button className={`d-block mt-4 ms-auto me-auto border-0 ${SectionType === "Conversation" ? "SelectedMenu" : "bg-transparent"}`} onClick={() => ChangeSection("Conversation")}>
+                                <ChatIcon className="IconColor"/>
+                            </button>
 
-                    <div className="w-100 AsideIcons mb-3">
-                        <button className={`d-block mt-4 ms-auto me-auto border-0 ${SectionType === "Conversation" ? "SelectedMenu" : "bg-transparent"}`} onClick={() => ChangeSection("Conversation")}>
-                            <ChatIcon className="IconColor"/>
-                        </button>
+                            <button className={`d-block mt-4 ms-auto me-auto border-0 ${SectionType === "Configuration" ? "SelectedMenu" : "bg-transparent"}`} onClick={() => ChangeSection("Configuration")}>
+                                <ConfigIcon className="IconColor"/>
+                            </button>
 
-                        <button className={`d-block mt-4 ms-auto me-auto border-0 ${SectionType === "Configuration" ? "SelectedMenu" : "bg-transparent"}`} onClick={() => ChangeSection("Configuration")}>
-                            <ConfigIcon className="IconColor"/>
-                        </button>
+                            <button className="d-block mt-4 ms-auto me-auto border-0 bg-transparent" onClick={ Logout }>
+                                <SignOutIcon className="IconColor"/>
+                            </button>
+                        </div>
+                    </section>
+                }
 
-                        <button className="d-block mt-4 ms-auto me-auto border-0 bg-transparent" onClick={ Logout }>
-                            <SignOutIcon className="IconColor"/>
-                        </button>
-                    </div>
-                </section>
-
-                <section className="col-10 h-100 ps-4 position-relative">
+                <section className={`${ScreenWidth >= 880 ? 'col-10 ps-4' : 'col-12'} h-100 position-relative`}>
                     <section className="w-100">
                         <div className="d-flex ProfileInfo mt-4 ms-3">
                             <figure className="h-100 position-relative">
@@ -198,9 +209,23 @@ export default function AsideMenu(){
                             </figure>
 
                             <div>
-                                <p className="ms-3 mb-0 text-black fw-bold fs-5">{`${FirstName} ${Lastname}`}</p>
-                                <p className="ms-3 text-muted">{t("Online")}</p>
+                                <p className="ms-3 mb-0 text-black fw-bold fs-5 OneLineText">{`${FirstName} ${Lastname}`}</p>
+                                <p className="ms-3 text-muted OneLineText">{t("Online")}</p>
                             </div>
+
+                            {
+                                ScreenWidth < 880 && SectionType === "Conversation" &&
+                                <button className="d-block mt-2 ms-auto border-0 bg-transparent" onClick={() => ChangeSection("Configuration")} style={{width: "45px", height: "45px"}}>
+                                    <ConfigIcon className="IconColor"/>
+                                </button>
+                            }
+
+                            {
+                                ScreenWidth < 880 && SectionType === "Configuration" &&
+                                <button className="d-block mt-2 ms-auto border-0 bg-transparent" onClick={() => ChangeSection("Conversation")} style={{width: "45px", height: "45px"}}>
+                                    <ChatIcon className="IconColor"/>
+                                </button>
+                            }
                         </div>
 
                         <hr className="p-0 m-0"/>
@@ -216,7 +241,11 @@ export default function AsideMenu(){
 
                         <hr className={`p-0 mt-2 ${SectionType === "Search" ? "mb-2" : ""}`}/>
 
-                        <hr className="VerticalSeparator"/>
+                        {
+                            ScreenWidth >= 880 && 
+                            <hr className="VerticalSeparator"/>
+                        }
+                        
                     </section>
 
                     <section className="h-75">
@@ -238,7 +267,7 @@ export default function AsideMenu(){
 
             <Modal className='ProfileImageModal' show={ShowProfileImageModal} onHide={ProfileImageModalClose} centered>
                 <Modal.Header closeButton>
-                    <Modal.Title>{t("ProfileImageModalTitle")}</Modal.Title>
+                    <Modal.Title>{ t("ProfileImageModalTitle") }</Modal.Title>
                 </Modal.Header>
 
                 <Modal.Body>
@@ -260,14 +289,14 @@ export default function AsideMenu(){
                 </Modal.Body>
 
                 <Modal.Footer>
-                    <button className='btn btn-secondary' onClick={ProfileImageModalClose}>Cancel</button>
+                    <button className='btn btn-secondary' onClick={ProfileImageModalClose}>{ t("ProfileImageModalCancel") }</button>
 
-                    <label htmlFor="ProfileImageFile" className='btn btn-primary'>Load Image</label>
+                    <label htmlFor="ProfileImageFile" className='btn btn-primary'>{ t("LoadImage") }</label>
                     <input id="ProfileImageFile" className='d-none' accept="image/png, image/gif, image/jpeg" disabled={LoadingProfileImage === true} type="file" onChange={(e) => LoadProfileImage(e.target.files[0])}/>
 
                     {
                         ProfileImageTemp !== "" &&
-                        <button className='btn btn-primary' onClick={SaveProfileImage}>Save Changes</button>
+                        <button className='btn btn-primary' onClick={SaveProfileImage}>{ t("SaveChanges") }</button>
                     }
                 </Modal.Footer>
             </Modal>

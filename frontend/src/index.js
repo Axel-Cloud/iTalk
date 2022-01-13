@@ -35,6 +35,11 @@ import Messenger_en from "./Translations/en/Messenger.json";
 import Messenger_es from "./Translations/es/Messenger.json";
 import Messenger_fr from "./Translations/fr/Messenger.json";
 
+//Configuration
+import Configuration_en from "./Translations/en/Configuration.json";
+import Configuration_es from "./Translations/es/Configuration.json";
+import Configuration_fr from "./Translations/fr/Configuration.json";
+
 /* End Translations */
 
 i18next.init({
@@ -46,21 +51,24 @@ i18next.init({
       SignUp: SignUp_en,
       Forgot: ForgotPassword_en,
       Reset: ResetPassword_en,
-      Messenger: Messenger_en
+      Messenger: Messenger_en,
+      Configuration: Configuration_en
     },
     es: {
       Login: Login_es,
       SignUp: SignUp_es,
       Forgot: ForgotPassword_es,
       Reset: ResetPassword_es,
-      Messenger: Messenger_es
+      Messenger: Messenger_es,
+      Configuration: Configuration_es
     },
     fr: {
       Login: Login_fr,
       SignUp: SignUp_fr,
       Forgot: ForgotPassword_fr,
       Reset: ResetPassword_fr,
-      Messenger: Messenger_fr
+      Messenger: Messenger_fr,
+      Configuration: Configuration_fr
     }
   }
 });

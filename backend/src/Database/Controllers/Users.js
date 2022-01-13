@@ -9,7 +9,7 @@ const Create = async (Data, UserResponse) => {
     {
       Name: Data.Name,
       Lastname: Data.Lastname,
-      Email: Data.Email.toUpperCase(),
+      Email: Data.Email,
       Password: Data.Password,
       Gender: Data.Gender,
       Online: false,
@@ -81,7 +81,7 @@ const Search = async (Data, UserResponse) => {
 
 const Login = async (Data, UserResponse) => {
   await UsersSchema.findOne(
-    { Email: Data.Email.toUpperCase(), Password: Data.Password },
+    { Email :{'$regex' : `^${Data.Email}$`, '$options' : 'i'}, Password: Data.Password},
     (Error, User) => {
       UserResponse.send(
         Error ? `Error: ${Error}` : User === null ? "Invalid" : User._id
@@ -97,7 +97,7 @@ const UpdateOnline = async (Data) => {
 };
 
 const UserData = async (Data, UserResponse) => {
-  await UsersSchema.findById(Data.ID, "Name Lastname ProfileImage Conversations", async (Error, User) => {
+  await UsersSchema.findById(Data.ID, "Name Lastname Email ProfileImage Conversations", async (Error, User) => {
     let SecondUserConversation = "";
     let Loaded = false;
 
@@ -112,7 +112,7 @@ const UserData = async (Data, UserResponse) => {
               SecondUserConversation = Conversations[x].Users.filter((User) => User !== Data.ID)[0];
               
               if(SecondUserConversation !== ""){
-                await UsersSchema.findById(SecondUserConversation, "_id Name Lastname ProfileImage Online", (Error, {_id, Name, Lastname, ProfileImage, Online}) => {
+                await UsersSchema.findById(SecondUserConversation, "_id Name Lastname Email ProfileImage Online", (Error, {_id, Name, Lastname, Email, ProfileImage, Online}) => {
                   if(!Error){
                     User = {
                       ...User._doc,
@@ -120,11 +120,12 @@ const UserData = async (Data, UserResponse) => {
                         _id,
                         Name,
                         Lastname,
+                        Email,
                         ProfileImage,
                         Online
                       }
                     }
-
+                    
                     UserResponse.send(User);
                   }
                   else{
@@ -163,7 +164,7 @@ const UserData = async (Data, UserResponse) => {
 };
 
 const ForgotPass = async (Data, UserResponse) => {
-  await UsersSchema.findOne({ Email: Data.body.Email.toUpperCase() }, (Error, User) => {
+  await UsersSchema.findOne({ Email :{'$regex' : `^${Data.body.Email}$`, '$options' : 'i'}}, (Error, User) => {
     if(!Error){
       if(User !== null){
         UsersRecover.create({
@@ -201,8 +202,8 @@ const ForgotPass = async (Data, UserResponse) => {
               port: 587,
               secure: false, // true for 465, false for other ports
               auth: {
-                user: "iTalkSecure@gmail.com", // generated ethereal user
-                pass: "26ax02st", // generated ethereal password
+                user: "iTalkSecure@gmail.com",
+                pass: "26ax02st"
               },
             }); 
 
@@ -310,8 +311,26 @@ const UpdateProfileImage = async (Data, UserResponse) => {
 };
 
 const UpdateUserInfo = async (Data, UserResponse) => {
-  await UsersSchema.findOneAndUpdate({"_id": Data.ID}, {$set: {ProfileImage: Data.ProfileImage}}, (Error) => {
-    UserResponse.send(Error ? `Error: ${Error.message}` : "Updated");
+  console.log(Data.Name, Data.Lastname)
+  await UsersSchema.findOneAndUpdate({"_id": Data.ID}, {$set: {Name: Data.Name, Lastname: Data.Lastname, ProfileImage: Data.ProfileImage}}, async (Error) => {
+    if(!Error){
+      if(Data.Password.toString().length > 0){
+        await UsersSchema.findOneAndUpdate({"_id": Data.ID}, {$set: {Password: Data.Password}}, async (Error) => {
+          if(!Error){
+            UserResponse.send("Updated");
+          }
+          else{
+            UserResponse.send(`Error: ${Error.message}`);
+          }
+        });
+      }
+      else{
+        UserResponse.send("Updated");
+      }
+    }
+    else{
+      UserResponse.send(`Error: ${Error.message}`);
+    }
   });
 };
 

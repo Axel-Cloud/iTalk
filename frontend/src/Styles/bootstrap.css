@@ -12090,6 +12090,11 @@ fieldset:disabled .btn {
   text-align: center;
 }
 
+.Messenger .AsideMenu {
+  min-width: var(--Aside-Menu-Size);
+  width: var(--Aside-Menu-Size);
+}
+
 .Messenger .AsideMenu .AsideIcons {
   position: absolute;
   bottom: 0;
@@ -12118,11 +12123,11 @@ fieldset:disabled .btn {
   transform: scale(1.1);
 }
 
-.Messenger .AsideMenu .Menu button .IconColor {
+.IconColor {
   fill: inherit;
 }
 
-.Messenger .AsideMenu .Menu button .IconColor path {
+.IconColor path {
   fill: inherit;
 }
 
@@ -12287,7 +12292,7 @@ fieldset:disabled .btn {
 }
 
 .Chat .MessageList .Messages{
-  height: 90%;
+  height: 88%;
   overflow: scroll;
 }
 
@@ -12408,6 +12413,12 @@ fieldset:disabled .btn {
   min-height: 200px;
   max-width: 275px;
   max-height: 275px;
+}
+
+.OneLineText{
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 /*# sourceMappingURL=bootstrap.css.map */

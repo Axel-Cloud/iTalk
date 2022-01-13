@@ -3,5 +3,7 @@
     "Online": "Online",
     "SearchDescription": "Find people to talk",
     "ProfileImageModalTitle": "Edit Profile Image",
-    "ProfileImageModalCancel": "Cancel"
+    "ProfileImageModalCancel": "Cancel",
+    "LoadImage": "Load Image",
+    "SaveChanges": "Save Changes"
 }

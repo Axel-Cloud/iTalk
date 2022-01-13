@@ -1,6 +1,8 @@
 import React, { useEffect } from 'react'
 import ScreenDimensions from "../../Others/useScreenDimensions";
 import MD5 from 'md5';
+import Axios from 'axios';
+import { io } from "socket.io-client";
 import { useTranslation } from 'react-i18next';
 
 /* Redux */
@@ -17,10 +19,11 @@ import FrenchStrings from "react-timeago/lib/language-strings/en-short";
 import buildFormatter from "react-timeago/lib/formatters/buildFormatter";
 
 export default function ConversationsList({ Conversations }){
-    const { ScreenHeight } = ScreenDimensions();
+    const { ScreenWidth, ScreenHeight } = ScreenDimensions();
     const { t } = useTranslation("Messenger");
     const ConversationListRef = React.createRef();
     const dispatch = useDispatch();
+    const Socket = io("http://localhost:3001");
 
     const EnglishFormatter = buildFormatter(EnglishStrings);
     const SpanishFormatter = buildFormatter(SpanishStrings);
@@ -37,6 +40,28 @@ export default function ConversationsList({ Conversations }){
     }, [ConversationListRef])
 
     useEffect(() => {
+        Socket.connect();
+
+        Socket.on(localStorage.getItem("User"), (NewMessage) => {
+            if(ScreenWidth < 880){
+                Axios.get("http://localhost:3001/api/Conversation/Search", {
+                    params:{
+                        ID: localStorage.getItem("User")
+                    }}).then((Data) => {
+                        dispatch(UpdateConversations(Data.data));
+                });
+            }
+        });
+
+        return () => {
+            setTimeout(() => {
+                Socket.disconnect();
+            }, 50);
+        }
+        // eslint-disable-next-line
+    }, [Conversations])
+
+    useEffect(() => {
         document.documentElement.style.setProperty("--Conversation-List-Height", `${ScreenHeight - ConversationListRef.current.getBoundingClientRect().top}px`);
     }, [ScreenHeight, ConversationListRef])
 
@@ -46,6 +71,7 @@ export default function ConversationsList({ Conversations }){
 
         dispatch(UpdateConversations(ConversationsAux));
         dispatch(ConversationMessages([]));
+        Conversations[Index].SecondUser.isSelected = true;
         dispatch(SelectedConversation(Conversations[Index].SecondUser));
     }
 
@@ -67,9 +93,9 @@ export default function ConversationsList({ Conversations }){
                                         <div className="row">
                                             {
                                                 Conversation.SecondUser._id !== MD5(localStorage.getItem("User")) ?
-                                                <p className="col-10 ps-0 mb-0 text-black fw-bold fs-6">{`${Conversation.SecondUser.Name} ${Conversation.SecondUser.Lastname}`}</p>
+                                                <p className="col-10 ps-0 mb-0 text-black fw-bold fs-6 OneLineText">{`${Conversation.SecondUser.Name} ${Conversation.SecondUser.Lastname}`}</p>
                                                 :
-                                                <p className="col-10 ps-0 mb-0 text-black fw-bold fs-6">{t("iTalkSupport")}</p>
+                                                <p className="col-10 ps-0 mb-0 text-black fw-bold fs-6 OneLineText">{t("iTalkSupport")}</p>
                                             }
                                             
                                             <p className="col-2 ps-0 mb-0 text-black fs-6 text-end pe-3">

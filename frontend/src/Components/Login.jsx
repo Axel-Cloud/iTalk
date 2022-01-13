@@ -120,7 +120,7 @@ export default function Login({ ResetSignUpTransition }){
                                 <input type="email" id="LoginEmail" className="form-control form-control-lg" placeholder={ t("EmailPlaceholder") } onInput={ (e) => setLoginEmail(e.target.value) }/>
                                 <input type="password" id="LoginPassword" className="form-control form-control-lg mt-2" placeholder={ t("PasswordPlaceholder") } onInput={ (e) => setLoginPassword(e.target.value) }/>
                                 <input type="submit" className="btn btn-primary w-100 mt-3 form-control-lg fw-bold fs-5" value={ t("Login") }/>
-                                <Link className={`btn btn-link text-end d-block text-decoration-none mt-1 ms-auto ${ScreenWidth < 990 ? "" : "w-50"}`} to="/Forgot">{ t("ForgotPassword") }</Link>
+                                <Link className={`btn btn-link text-end d-block text-decoration-none mt-1 ms-auto ${ScreenWidth < 990 ? "" : "w-100"}`} to="/Forgot">{ t("ForgotPassword") }</Link>
                             </form>
                         </div>
                     </div>

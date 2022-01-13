@@ -1,0 +1,15 @@
+{
+    "Language": "Español",
+    "EditProfileImage": "Editar",
+    "FirstNameInput": "Nombre",
+    "LastnameInput": "Apellido",
+    "Email": "Correo Electrónico",
+    "Password": "Contraseña",
+    "ConfirmPassword": "Confirmar Contraseña",
+    "UpdateInformation": "Actualizar Datos",
+    "SignOut": "Cerrar Sesión",
+    "ProfileImageModalTitle": "Editar Foto de Perfil",
+    "ModalCancel": "Cancelar",
+    "LoadImage": "Cargar Imagen",
+    "SaveChanges": "Guardar Cambios"
+}

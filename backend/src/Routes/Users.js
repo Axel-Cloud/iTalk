@@ -37,7 +37,7 @@ UsersRouter.get("/", (Request, Response) => {
                 Users.UpdateProfileImage(Request.body, Response);
             })
             .put("/UpdateUserInfo", (Request, Response) => {
-                
+                Users.UpdateUserInfo(Request.body, Response);
             });
 
 module.exports = UsersRouter;

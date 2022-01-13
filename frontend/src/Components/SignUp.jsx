@@ -137,7 +137,7 @@ export default function SignUp({ InitialTransition }){
     const ValidateForm = () => {
         if(FormSubmited){
             //First Name Validation
-            if(/^[A-Za-z ]+$/.test(FirstName) && FirstName.length >= 3){
+            if(/^[A-ZÁ-Úá-úa-z]+$/.test(FirstName) && FirstName.length >= 3){
                 FirstNameRef.current.classList.remove("is-invalid");
                 FirstNameRef.current.classList.add("is-valid");
             }
@@ -147,7 +147,7 @@ export default function SignUp({ InitialTransition }){
             }
 
             //Last Name Validation
-            if(/^[A-Za-z ]+$/.test(LastName) && LastName.length >= 3){
+            if(/^[A-ZÁ-Úá-úa-z]+$/.test(LastName) && LastName.length >= 3){
                 LastNameRef.current.classList.remove("is-invalid");
                 LastNameRef.current.classList.add("is-valid");
             }
@@ -294,7 +294,7 @@ export default function SignUp({ InitialTransition }){
                         </form>
                     </div>
 
-                    <div className={`SignUpAside ${ScreenWidth < 890 ? "d-none":"col-4"}`}>
+                    <div className={`SignUpAside ${ScreenWidth < 1240 ? "d-none":"col-4"}`}>
 
                     </div>
                 </div>

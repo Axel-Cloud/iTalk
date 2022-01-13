@@ -3,13 +3,16 @@ import Axios from "axios";
 import { io } from "socket.io-client";
 import ScrollToBottom from 'react-scroll-to-bottom';
 import { useTranslation } from "react-i18next";
+import ScreenDimensions from "../../Others/useScreenDimensions";
 import MD5 from "md5";
 
-//Images
+/* Icons */
 import { ReactComponent as SendIcon } from '../../Assets/icons/Send.svg';
+import { ReactComponent as BackArrow } from '../../Assets/icons/BackArrow.svg';
 
 /* Redux */
 import { useSelector, useDispatch } from "react-redux";
+import { SelectedConversation as SelectedConversationAux } from '../../Store/SelectedConversation/action';
 import { ConversationMessages } from "../../Store/ConversationMessages/action";
 import { UpdateConversations } from "../../Store/Conversations/action";
 
@@ -18,6 +21,8 @@ export default function Chat() {
     const [TARows, setTARows] = useState(1)
     const [FirstLineLength, setFirstLineLength] = useState(0);
     const [SecondLineLength, setSecondLineLength] = useState(0);
+
+    const { ScreenWidth } = ScreenDimensions();
 
     const Socket = io("http://localhost:3001");
 
@@ -47,12 +52,7 @@ export default function Chat() {
                     ConversationID: SelectedConversation.ID < localStorage.getItem("User") ? MD5(`${SelectedConversation.ID}${localStorage.getItem("User")}`) : MD5(`${localStorage.getItem("User")}${SelectedConversation.ID}`),
                     UserID: localStorage.getItem("User")
                 }).then(() => {
-                    Axios.get("http://localhost:3001/api/Conversation/Search", {
-                    params:{
-                        ID: localStorage.getItem("User")
-                    }}).then((Data) => {
-                        dispatch(UpdateConversations(Data.data));
-                    });
+                    UpdateListConversation();
                 });
             }
             else if(NewMessage.UserID === localStorage.getItem("User")){
@@ -62,21 +62,11 @@ export default function Chat() {
                 else{
                     dispatch(ConversationMessages([NewMessage]));
                 }
-                
-                Axios.get("http://localhost:3001/api/Conversation/Search", {
-                    params:{
-                        ID: localStorage.getItem("User")
-                    }}).then((Data) => {
-                        dispatch(UpdateConversations(Data.data));
-                });
+
+                UpdateListConversation();
             }
             else{
-                Axios.get("http://localhost:3001/api/Conversation/Search", {
-                    params:{
-                        ID: localStorage.getItem("User")
-                    }}).then((Data) => {
-                        dispatch(UpdateConversations(Data.data));
-                });
+                UpdateListConversation();
             }
         });
 
@@ -159,11 +149,31 @@ export default function Chat() {
         }
     };
 
+    const UpdateListConversation = () => {
+        Axios.get("http://localhost:3001/api/Conversation/Search", {
+            params:{
+                ID: localStorage.getItem("User")
+            }}).then((Data) => {
+                dispatch(UpdateConversations(Data.data));
+        });
+    };
+
+    const ReturnConversationList = () => {
+        dispatch(SelectedConversationAux({isSelected: false}));
+    };
+
     return (
         <section className="vh-100 w-100 Chat">
             <div className="MessageList">
                 <section>
                     <article className="d-flex align-items-center h-100 w-100 ms-1">
+                        {
+                            ScreenWidth < 880 &&
+                            <button className='bg-transparent border-0 me-2' style={{width: "35px"}} onClick={ReturnConversationList}>
+                                <BackArrow />
+                            </button>
+                        }
+                        
                         <figure className="h-100 position-relative VerticalFigure">
                             <img className="ProfileImageSize rounded-circle" src={`data:image/png;base64,${SelectedConversation.ProfileImage}`} alt="" />
                             <div className={`${SelectedConversation.Online ? "ProfileStatusGreen" : "ProfileStatusGray"} rounded-circle`}></div>
@@ -178,7 +188,7 @@ export default function Chat() {
                     </article>
                 </section>
 
-                <hr className="mt-0 me-4"/>
+                <hr className={`mt-0 ${ScreenWidth >= 880 ? "me-4" : "ms-3 me-3"} `}/>
 
                 <ScrollToBottom className="Messages">
                     {
@@ -188,7 +198,7 @@ export default function Chat() {
                                 <div key={message._id} className={`d-flex ${message.UserID === localStorage.getItem("User") ? "justify-content-end" : "justify-content-start"} ${Index === 0 ? "mt-1" : Messages[Index - 1].UserID === Messages[Index].UserID ? "mt-2" : "mt-4"} w-100 Message`}>
                                     {
                                         message.UserID !== localStorage.getItem("User") &&
-                                        <figure className="h-100 position-relative VerticalFigure me-2">
+                                        <figure className={`h-100 position-relative VerticalFigure me-2 ${ScreenWidth < 880 ? "ms-3" : "ms-2"}`}>
                                             <img className="w-100 h-100 rounded-circle" src={`data:image/png;base64,${SelectedConversation.ProfileImage}`} alt="" />
                                         </figure>
                                     }

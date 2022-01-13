@@ -1,0 +1,15 @@
+{
+    "Language": "Français",
+    "EditProfileImage": "Éditer",
+    "FirstNameInput": "Prénom",
+    "LastnameInput": "Nom de famille",
+    "Email": "E-mail",
+    "Password": "Mot de passe",
+    "ConfirmPassword": "Confirmez le mot de passe",
+    "UpdateInformation": "Mettre à jour les données",
+    "SignOut": "Déconnexion",
+    "ProfileImageModalTitle": "Éditer la photo de profil",
+    "ModalCancel": "Annuler",
+    "LoadImage": "Charger l'image",
+    "SaveChanges": "Sauvegarder les modifications"
+}

@@ -113,7 +113,7 @@ const NewMessage = async ({ConversationID, EmitterID, RecieverID, Message}, Sock
     await ConversationSchema.findById(ConversationID, async (Error, Conversation) => {
         if(Conversation !== null){
             let NewConversation = Conversation.Conversation;
-            let NewMessage = {UserID: EmitterID, Message, Date: new Date(), Readed: false};
+            let NewMessage = {ConversationID, UserID: EmitterID, Message, Date: new Date(), Readed: false};
             NewConversation.push(NewMessage);
             NewMessage._id = NewConversation[NewConversation.length - 1]._id;
 
@@ -140,7 +140,9 @@ const NewMessage = async ({ConversationID, EmitterID, RecieverID, Message}, Sock
                     User.Conversations.push(ConversationID);
                     User.save();
                 });
-    
+                
+                Conversation.Conversation[0].ConversationID = ConversationID;
+
                 if(RecieverID !== ""){
                     await UserSchema.findById(RecieverID, (Error, User) => {
                         User.Conversations.push(ConversationID);
