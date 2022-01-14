@@ -4,9 +4,10 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "node src/Index.js",
     "dev": "nodemon --exec babel-node src/Index.js",
-    "build": "babel src -d dist --source-maps"
+    "build-babel": "babel -d ./dist ./src -s",
+    "build": "npm run clean && npm run build-babel",
+    "start": "npm run build && node ./dist/Index.js"
   },
   "keywords": [],
   "author": "",
