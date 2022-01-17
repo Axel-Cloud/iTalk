@@ -10,12 +10,17 @@ import ScreenDimensions from "../Others/useScreenDimensions";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faLanguage as Language} from '@fortawesome/free-solid-svg-icons';
 
+/* Redux */
+import { useSelector } from "react-redux";
+
 export default function Login({ ResetSignUpTransition }){
     const [LoginEmail, setLoginEmail] = useState("");
     const [LoginPassword, setLoginPassword] = useState("");
     const { ScreenWidth, ScreenHeight } = ScreenDimensions();
 
     const { t, i18n } = useTranslation("Login");
+
+    const ApiURL = useSelector(state => state.ApiURL.URL);
 
     useEffect(() => {
         ResetSignUpTransition(true);
@@ -51,7 +56,7 @@ export default function Login({ ResetSignUpTransition }){
             Toast.warning(t("MissingLoginDataMessage"), t("MissingLoginDataTitle"), { timeOut: 2500, showDuration: true, closeButton: true })
         }
         else{
-            Axios.get("http://localhost:3001/api/Users", {
+            Axios.get(`${ApiURL}/api/Users`, {
                 params: {
                     "Email": LoginEmail,
                     "Password": CryptoJs.SHA256(LoginPassword).toString()

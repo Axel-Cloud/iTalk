@@ -16,7 +16,7 @@ const SocketIO = new Server(httpServer, { cors: { origin: '*' } });
 
 /* Server Settings */
 process.setMaxListeners(0)
-App.set("Port", process.env.Port || 3003);
+App.set("Port", process.env.PORT || 3003);
 
 /* Middlewares */
 App.use(Cors());

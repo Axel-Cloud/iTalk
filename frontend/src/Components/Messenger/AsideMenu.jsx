@@ -41,10 +41,11 @@ export default function AsideMenu(){
     const Lastname = useSelector(state => state.UserInfo.Lastname);
     const ProfileImage = useSelector(state => `${state.UserInfo.ProfileImage}`);
     const Conversations = useSelector(state => state.Conversations.Conversations);
-    const Socket = io("http://localhost:3001");
+    const ApiURL = useSelector(state => state.ApiURL.URL);
+    const Socket = io(ApiURL);
 
     useEffect(() => {
-        Axios.get("http://localhost:3001/api/Users/Data", {
+        Axios.get(`${ApiURL}/api/Users/Data`, {
             params: {
                 ID: localStorage.getItem("User")
             }
@@ -54,7 +55,7 @@ export default function AsideMenu(){
             dispatch(SelectedConversation(Data.data.LastReadedConversation));
         });
 
-        Axios.get("http://localhost:3001/api/Conversation/Search", {
+        Axios.get(`${ApiURL}/api/Conversation/Search`, {
             params:{
                 ID: localStorage.getItem("User")
             }
@@ -103,7 +104,7 @@ export default function AsideMenu(){
 
     const SearchPeople = (Value) => {
         if(Value.length > 0){
-            Axios.get("http://localhost:3001/api/Users/Search", {
+            Axios.get(`${ApiURL}/api/Users/Search`, {
                 params: {
                     "UserID": localStorage.getItem("User"),
                     "Search": Value
@@ -164,7 +165,7 @@ export default function AsideMenu(){
     };
     
     const SaveProfileImage = () => {
-        Axios.put("http://localhost:3001/api/Users/UpdatePI", { ID: localStorage.getItem("User"), ProfileImage: ProfileImageTemp.split(",")[1] }).then((Data) => {
+        Axios.put(`${ApiURL}/api/Users/UpdatePI`, { ID: localStorage.getItem("User"), ProfileImage: ProfileImageTemp.split(",")[1] }).then((Data) => {
             if(Data.data === "Updated"){
                 dispatch(UpdateUserInfo({ Name: FirstName, Lastname, ProfileImage: ProfileImageTemp.split(",")[1]}));
                 ProfileImageModalClose();

@@ -7,12 +7,17 @@ import ScreenDimensions from "../Others/useScreenDimensions";
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 
+/* Redux */
+import { useSelector } from "react-redux";
+
 export default function ForgotPass(){
     const { t } = useTranslation("Forgot");
     const EmailRef = React.createRef();
     const ForgotSubmit = React.createRef();
     const ReturnRef = React.createRef();
     const { ScreenWidth } = ScreenDimensions();
+
+    const ApiURL = useSelector(state => state.ApiURL.URL);
 
     let FormSubmited = false; 
     let Email = "";
@@ -63,7 +68,7 @@ export default function ForgotPass(){
         ForgotSubmit.current.disabled = true;
 
         if(EmailRef.current.classList.contains("is-valid")){
-            Axios.post("http://localhost:3001/api/Users/Forgot", { "Email": Email, "Language": localStorage.getItem("Lang")}).then((Data) => {
+            Axios.post(`${ApiURL}/api/Users/Forgot`, { "Email": Email, "Language": localStorage.getItem("Lang")}).then((Data) => {
                 if(Data.data === "Email Sent"){
                     Toast.success(t("EmailSentSuccess"), "", { timeOut: 5000, showDuration: true, closeButton: true });
                     

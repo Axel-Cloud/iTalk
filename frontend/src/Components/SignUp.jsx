@@ -8,6 +8,9 @@ import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 
+/* Redux */
+import { useSelector } from "react-redux";
+
 export default function SignUp({ InitialTransition }){
     let FormSubmited = false;
     let FirstName = "";
@@ -30,6 +33,8 @@ export default function SignUp({ InitialTransition }){
 
     const { ScreenWidth } = ScreenDimensions();
     const { t } = useTranslation("SignUp");
+
+    const ApiURL = useSelector(state => state.ApiURL.URL);
 
     const SignUpVariants = {
         initial: {
@@ -87,7 +92,7 @@ export default function SignUp({ InitialTransition }){
             ConfirmPasswordRef.current.disabled = true;
             SignUpButton.current.disabled = true;
 
-            Axios.post("http://localhost:3001/api/Users", {
+            Axios.post(`${ApiURL}/api/Users`, {
                 "Name": FirstName,
                 "Lastname": LastName,
                 "Email": Email,

@@ -32,9 +32,11 @@ export default function Configuration() {
     const LastnameRedux = useSelector(state => state.UserInfo.Lastname);
     const EmailRedux = useSelector(state => state.UserInfo.Email);
     const UserProfileImageRedux = useSelector(state => state.UserInfo.ProfileImage);
+    const ApiURL = useSelector(state => state.ApiURL.URL);
 
     const dispatch = useDispatch();
-    const Socket = io("http://localhost:3001");
+    const Socket = io(ApiURL);
+
     const { ScreenWidth } = ScreenDimensions();
     const { i18n, t } = useTranslation("Configuration");
     const EditProfileImageBtn = React.createRef();
@@ -71,7 +73,7 @@ export default function Configuration() {
         let ProfileImageAux = ProfileImageTemp.length > 0 ? ProfileImageTemp.split(",")[1] : UserProfileImageRedux;
 
         if(PasswordInput === ConfirmPasswordInput){
-            Axios.put("http://localhost:3001/api/Users/UpdateUserInfo", {
+            Axios.put(`${ApiURL}/api/Users/UpdateUserInfo`, {
                 ID: localStorage.getItem("User"),
                 Name: FirstNameAux,
                 Lastname: LastnameAux,
@@ -79,7 +81,7 @@ export default function Configuration() {
                 Password: PasswordInput.length > 0 ? CryptoJs.SHA256(PasswordInput).toString() : ""
             }).then((Data) => {
                 if(Data.data === "Updated"){
-                    Axios.get("http://localhost:3001/api/Users/Data", {
+                    Axios.get(`${ApiURL}/api/Users/Data`, {
                         params: {
                             ID: localStorage.getItem("User")
                         }

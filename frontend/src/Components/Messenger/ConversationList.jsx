@@ -6,7 +6,7 @@ import { io } from "socket.io-client";
 import { useTranslation } from 'react-i18next';
 
 /* Redux */
-import { useDispatch } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { SelectedConversation } from '../../Store/SelectedConversation/action';
 import { ConversationMessages } from "../../Store/ConversationMessages/action";
 import { UpdateConversations } from "../../Store/Conversations/action";
@@ -22,8 +22,11 @@ export default function ConversationsList({ Conversations }){
     const { ScreenWidth, ScreenHeight } = ScreenDimensions();
     const { t } = useTranslation("Messenger");
     const ConversationListRef = React.createRef();
+
+    const ApiURL = useSelector(state => state.ApiURL.URL);
+
     const dispatch = useDispatch();
-    const Socket = io("http://localhost:3001");
+    const Socket = io(ApiURL);
 
     const EnglishFormatter = buildFormatter(EnglishStrings);
     const SpanishFormatter = buildFormatter(SpanishStrings);
@@ -44,7 +47,7 @@ export default function ConversationsList({ Conversations }){
 
         Socket.on(localStorage.getItem("User"), (NewMessage) => {
             if(ScreenWidth < 880){
-                Axios.get("http://localhost:3001/api/Conversation/Search", {
+                Axios.get(`${ApiURL}/api/Conversation/Search`, {
                     params:{
                         ID: localStorage.getItem("User")
                     }}).then((Data) => {

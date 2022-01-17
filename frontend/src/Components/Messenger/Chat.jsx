@@ -24,18 +24,18 @@ export default function Chat() {
 
     const { ScreenWidth } = ScreenDimensions();
 
-    const Socket = io("http://localhost:3001");
-
     const dispatch = useDispatch();
     const { t } = useTranslation("Messenger");
     const MessageInputRef = React.createRef();
     const SendButtonRef = React.createRef();
 
     const SelectedConversation = useSelector(state => state.SelectedConversation);
-    const ProfileImage = useSelector(state => `${state.UserInfo.ProfileImage}`);
-
+    const ProfileImage = useSelector(state => state.UserInfo.ProfileImage);
     const Messages = useSelector(state => state.ConversationMessages.Messages);
+    const ApiURL = useSelector(state => state.ApiURL.URL);
     
+    const Socket = io(ApiURL);
+
     useEffect(() => {
         Socket.connect();
 
@@ -48,7 +48,7 @@ export default function Chat() {
                     dispatch(ConversationMessages([NewMessage]));
                 }
                 
-                Axios.put("http://localhost:3001/api/Conversation", {
+                Axios.put(`${ApiURL}/api/Conversation`, {
                     ConversationID: SelectedConversation.ID < localStorage.getItem("User") ? MD5(`${SelectedConversation.ID}${localStorage.getItem("User")}`) : MD5(`${localStorage.getItem("User")}${SelectedConversation.ID}`),
                     UserID: localStorage.getItem("User")
                 }).then(() => {
@@ -98,14 +98,14 @@ export default function Chat() {
             SendButtonRef.current.disabled = false;
 
             if(SelectedConversation.ID !== ""){
-                Axios.put("http://localhost:3001/api/Conversation", {
+                Axios.put(`${ApiURL}/api/Conversation`, {
                     ConversationID: SelectedConversation.ID === MD5(localStorage.getItem("User")) ? MD5(localStorage.getItem("User")) : SelectedConversation.ID < localStorage.getItem("User") ? MD5(`${SelectedConversation.ID}${localStorage.getItem("User")}`) : MD5(`${localStorage.getItem("User")}${SelectedConversation.ID}`),
                     UserID: localStorage.getItem("User")
                 });
             }
         }
 
-        Axios.get("http://localhost:3001/api/Conversation", {
+        Axios.get(`${ApiURL}/api/Conversation`, {
             params: {
                 ID: SelectedConversation.ID === MD5(localStorage.getItem("User")) ? MD5(localStorage.getItem("User")) : SelectedConversation.ID < localStorage.getItem("User") ? MD5(`${SelectedConversation.ID}${localStorage.getItem("User")}`) : MD5(`${localStorage.getItem("User")}${SelectedConversation.ID}`)
             }
@@ -150,7 +150,7 @@ export default function Chat() {
     };
 
     const UpdateListConversation = () => {
-        Axios.get("http://localhost:3001/api/Conversation/Search", {
+        Axios.get(`${ApiURL}/api/Conversation/Search`, {
             params:{
                 ID: localStorage.getItem("User")
             }}).then((Data) => {

@@ -9,6 +9,9 @@ import { motion } from 'framer-motion';
 import { useTranslation } from "react-i18next";
 import { useParams, useLocation } from 'react-router';
 
+/* Redux */
+import { useSelector } from "react-redux";
+
 export default function ResetPass(){
     const [Visible, setVisible] = useState(false)
 
@@ -22,13 +25,15 @@ export default function ResetPass(){
     const ReturnButtonRef = React.createRef();
     const { ScreenWidth } = ScreenDimensions();
 
+    const ApiURL = useSelector(state => state.ApiURL.URL);
+
     let FormSubmited = false;
     let Password = "";
     let ConfirmPassword = "";
 
     useEffect(() => {
         if(Query.get("ccl") === "s"){
-            Axios.put("http://localhost:3001/api/Users/Reset/Cancel", { "id": Token }).then((Data) => {
+            Axios.put(`${ApiURL}/api/Users/Reset/Cancel`, { "id": Token }).then((Data) => {
                 document.getElementById("ReturnButtonccl").click();
             });
         }
@@ -67,7 +72,7 @@ export default function ResetPass(){
         ValidateForm();
 
         if(PasswordRef.current.classList.contains("is-valid") && ConfirmPasswordRef.current.classList.contains("is-valid")){
-            Axios.put("http://localhost:3001/api/Users/Reset", { Token, "Password": CryptoJs.SHA256(Password).toString() }).then((Data) => {
+            Axios.put(`${ApiURL}/api/Users/Reset`, { Token, "Password": CryptoJs.SHA256(Password).toString() }).then((Data) => {
                 if(Data.data === "Password Updated"){
                     Toast.success(t("UpdatedPasswordDescription"), t("UpdatedPasswordTitle"), { timeOut: 5000, showDuration: true, closeButton: true });
 
