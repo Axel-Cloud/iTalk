@@ -75,7 +75,6 @@ SocketIO.on("connection", Socket => {
   });
 });
 /* Server Listen */
-
 httpServer.listen(App.get("Port"), () => {
   console.log("Listen on port ".concat(App.get("Port")));
 });
