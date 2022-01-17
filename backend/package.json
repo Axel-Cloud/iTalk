@@ -5,8 +5,9 @@
   "main": "index.js",
   "scripts": {
     "dev": "nodemon --exec babel-node src/Index.js",
-    "build-babel": "babel -d ./dist ./src -s",
+    "clean": "rm -rf dist && mkdir dist",
     "build": "npm run clean && npm run build-babel",
+    "build-babel": "babel -d ./dist ./src -s",
     "start": "npm run build && node ./dist/Index.js"
   },
   "keywords": [],
