@@ -1,6 +1,7 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { motion } from "framer-motion";
 import ScreenDimensions from "../../Others/useScreenDimensions";
+import { io } from "socket.io-client";
 
 /* Redux */
 import { useSelector } from "react-redux";
@@ -12,7 +13,18 @@ import Chat from "./Chat";
 export default function Messenger(){
     const { ScreenWidth } = ScreenDimensions();
     const isSelectedConversationRedux = useSelector(state => state.SelectedConversation.isSelected);
-    
+    const ApiURL = useSelector(state => state.ApiURL.URL);
+    const Socket = io(ApiURL);
+
+    useEffect(() => {
+        Socket.connect();
+        
+        return () => {
+            Socket.disconnect();
+        }
+        // eslint-disable-next-line
+    }, []);
+
     const MessengerVariants = {
         initial: {
             opacity: 0
@@ -35,14 +47,14 @@ export default function Messenger(){
                 {
                     ScreenWidth >= 880 ?
                     <>
-                        <AsideMenu />
-                        <Chat/>
+                        <AsideMenu Socket={ Socket } />
+                        <Chat Socket={ Socket } />
                     </>
                     :
                     !isSelectedConversationRedux ?
-                    <AsideMenu />
+                    <AsideMenu Socket={ Socket }/>
                     :
-                    <Chat/>
+                    <Chat Socket={ Socket }/>
                 }
             </div>
         </motion.div>

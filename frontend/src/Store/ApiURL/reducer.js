@@ -1,5 +1,6 @@
 const InitialStatus = {
     URL: "https://italk-api.herokuapp.com"
+    //URL: "localhost:3001"
 };
 
 const ApiURLReducer = (state = InitialStatus, {type, URL}) => {

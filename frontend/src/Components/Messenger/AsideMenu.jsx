@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from "react-redux";
 import ScreenDimensions from "../../Others/useScreenDimensions";
 import Axios from 'axios';
-import { io } from "socket.io-client";
 import { Modal } from "react-bootstrap";
 import { useTranslation } from "react-i18next";
 import Toast from "toastr";
@@ -24,7 +23,7 @@ import { UpdateUserInfo } from "../../Store/UserInfo/action";
 import { UpdateConversations } from "../../Store/Conversations/action";
 import { AsideStatus } from "../../Store/AsideMenuStatus/action";
 
-export default function AsideMenu(){
+export default function AsideMenu({ Socket }){
     //Search, conversation list, and configuration
     const [SearchData, setSearchData] = useState([]);
     const [ProfileImageTemp, setProfileImageTemp] = useState("");
@@ -42,7 +41,6 @@ export default function AsideMenu(){
     const ProfileImage = useSelector(state => `${state.UserInfo.ProfileImage}`);
     const Conversations = useSelector(state => state.Conversations.Conversations);
     const ApiURL = useSelector(state => state.ApiURL.URL);
-    const Socket = io(ApiURL);
 
     useEffect(() => {
         Axios.get(`${ApiURL}/api/Users/Data`, {
@@ -252,13 +250,13 @@ export default function AsideMenu(){
                     <section className="h-75">
                         {
                             SectionType === "Conversation" ?
-                            <ConversationList Conversations={Conversations}/>
+                            <ConversationList Conversations={Conversations} Socket={Socket}/>
                             :
                             SectionType === "Search" ?
                             <Search Data={SearchData}/>   
                             :
                             SectionType === "Configuration" ?
-                            <Configuration/>
+                            <Configuration Socket={Socket}/>
                             :
                             ""
                         }

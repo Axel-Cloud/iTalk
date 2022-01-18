@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import Axios from "axios";
-import { io } from "socket.io-client";
 import ScrollToBottom from 'react-scroll-to-bottom';
 import { useTranslation } from "react-i18next";
 import ScreenDimensions from "../../Others/useScreenDimensions";
@@ -11,12 +10,12 @@ import { ReactComponent as SendIcon } from '../../Assets/icons/Send.svg';
 import { ReactComponent as BackArrow } from '../../Assets/icons/BackArrow.svg';
 
 /* Redux */
-import { useSelector, useDispatch } from "react-redux";
+import { useSelector, useDispatch, useStore } from "react-redux";
 import { SelectedConversation as SelectedConversationAux } from '../../Store/SelectedConversation/action';
 import { ConversationMessages } from "../../Store/ConversationMessages/action";
 import { UpdateConversations } from "../../Store/Conversations/action";
 
-export default function Chat() {
+export default function Chat({ Socket }) {
     const [Message, setMessage] = useState("");
     const [TARows, setTARows] = useState(1)
     const [FirstLineLength, setFirstLineLength] = useState(0);
@@ -29,35 +28,36 @@ export default function Chat() {
     const MessageInputRef = React.createRef();
     const SendButtonRef = React.createRef();
 
+    const store = useStore();
     const SelectedConversation = useSelector(state => state.SelectedConversation);
     const ProfileImage = useSelector(state => state.UserInfo.ProfileImage);
     const Messages = useSelector(state => state.ConversationMessages.Messages);
     const ApiURL = useSelector(state => state.ApiURL.URL);
     
-    const Socket = io(ApiURL);
-
     useEffect(() => {
-        Socket.connect();
-
         Socket.on(localStorage.getItem("User"), (NewMessage) => {
-            if(NewMessage.UserID === SelectedConversation.ID){
-                if(Messages !== undefined){
-                    dispatch(ConversationMessages([...Messages, NewMessage]));
+            let MessagesAux = store.getState().ConversationMessages.Messages;
+            let SelectedConversationAux = store.getState().SelectedConversation;
+
+            if(NewMessage.UserID === SelectedConversationAux.ID){
+                
+                if(MessagesAux !== undefined && MessagesAux !== []){
+                    dispatch(ConversationMessages([...MessagesAux, NewMessage]));
                 }
                 else{
                     dispatch(ConversationMessages([NewMessage]));
                 }
                 
                 Axios.put(`${ApiURL}/api/Conversation`, {
-                    ConversationID: SelectedConversation.ID < localStorage.getItem("User") ? MD5(`${SelectedConversation.ID}${localStorage.getItem("User")}`) : MD5(`${localStorage.getItem("User")}${SelectedConversation.ID}`),
+                    ConversationID: SelectedConversationAux.ID < localStorage.getItem("User") ? MD5(`${SelectedConversationAux.ID}${localStorage.getItem("User")}`) : MD5(`${localStorage.getItem("User")}${SelectedConversationAux.ID}`),
                     UserID: localStorage.getItem("User")
                 }).then(() => {
                     UpdateListConversation();
                 });
             }
             else if(NewMessage.UserID === localStorage.getItem("User")){
-                if(Messages !== undefined){
-                    dispatch(ConversationMessages([...Messages, NewMessage]));
+                if(MessagesAux !== undefined && MessagesAux !== []){
+                    dispatch(ConversationMessages([...MessagesAux, NewMessage]));
                 }
                 else{
                     dispatch(ConversationMessages([NewMessage]));
@@ -69,14 +69,8 @@ export default function Chat() {
                 UpdateListConversation();
             }
         });
-
-        return () => {
-            setTimeout(() => {
-                Socket.disconnect();
-            }, 50);
-        }
         // eslint-disable-next-line
-    }, [Messages])
+    }, []);
 
     useEffect(() => {
         MessageInputRef.current.focus();
@@ -89,6 +83,8 @@ export default function Chat() {
     }, [TARows]);
 
     useEffect(() => {
+        let UpdateReaded = false;
+
         if(SelectedConversation.ID === MD5(localStorage.getItem("User"))){
             MessageInputRef.current.disabled = true;
             SendButtonRef.current.disabled = true;
@@ -96,13 +92,7 @@ export default function Chat() {
         else{
             MessageInputRef.current.disabled = false;
             SendButtonRef.current.disabled = false;
-
-            if(SelectedConversation.ID !== ""){
-                Axios.put(`${ApiURL}/api/Conversation`, {
-                    ConversationID: SelectedConversation.ID === MD5(localStorage.getItem("User")) ? MD5(localStorage.getItem("User")) : SelectedConversation.ID < localStorage.getItem("User") ? MD5(`${SelectedConversation.ID}${localStorage.getItem("User")}`) : MD5(`${localStorage.getItem("User")}${SelectedConversation.ID}`),
-                    UserID: localStorage.getItem("User")
-                });
-            }
+            UpdateReaded = true;
         }
 
         Axios.get(`${ApiURL}/api/Conversation`, {
@@ -111,6 +101,13 @@ export default function Chat() {
             }
         }).then((Data) => {
             dispatch(ConversationMessages(Data.data.Conversation));
+            
+            if(SelectedConversation.ID !== "" && UpdateReaded && Data.data.Conversation[Data.data.Conversation.length - 1].UserID !== localStorage.getItem("User") && Data.data.Conversation[Data.data.Conversation.length - 1].Readed === false){
+                Axios.put(`${ApiURL}/api/Conversation`, {
+                    ConversationID: SelectedConversation.ID === MD5(localStorage.getItem("User")) ? MD5(localStorage.getItem("User")) : SelectedConversation.ID < localStorage.getItem("User") ? MD5(`${SelectedConversation.ID}${localStorage.getItem("User")}`) : MD5(`${localStorage.getItem("User")}${SelectedConversation.ID}`),
+                    UserID: localStorage.getItem("User")
+                });
+            }
         });
 
         // eslint-disable-next-line
@@ -169,8 +166,8 @@ export default function Chat() {
                     <article className="d-flex align-items-center h-100 w-100 ms-1">
                         {
                             ScreenWidth < 880 &&
-                            <button className='bg-transparent border-0 me-2' style={{width: "35px"}} onClick={ReturnConversationList}>
-                                <BackArrow />
+                            <button className='bg-transparent border-0 me-2' style={{width: "35px", maxWidth: "35px"}} onClick={ReturnConversationList}>
+                                <BackArrow style={{width: "100%"}}/>
                             </button>
                         }
                         

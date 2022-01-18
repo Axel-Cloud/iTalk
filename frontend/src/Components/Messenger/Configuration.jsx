@@ -1,10 +1,9 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import { Modal } from "react-bootstrap";
 import Toast from "toastr";
 import Axios from 'axios';
 import ScreenDimensions from "../../Others/useScreenDimensions";
 import CryptoJs from "crypto-js";
-import { io } from "socket.io-client";
 import { useTranslation } from "react-i18next";
 import { faLanguage as Language} from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -15,7 +14,7 @@ import { UpdateUserInfo } from "../../Store/UserInfo/action";
 import { SelectedConversation } from '../../Store/SelectedConversation/action';
 import { AsideStatus } from "../../Store/AsideMenuStatus/action";
 
-export default function Configuration() {
+export default function Configuration({Socket}) {
     /* States */
     const [ShowProfileImageModal, setShowProfileImageModal] = useState(false);
     const [ProfileImageTemp, setProfileImageTemp] = useState("");
@@ -35,21 +34,10 @@ export default function Configuration() {
     const ApiURL = useSelector(state => state.ApiURL.URL);
 
     const dispatch = useDispatch();
-    const Socket = io(ApiURL);
 
     const { ScreenWidth } = ScreenDimensions();
     const { i18n, t } = useTranslation("Configuration");
     const EditProfileImageBtn = React.createRef();
-
-    useEffect(() => {
-        Socket.connect();
-
-        return () => {
-            Socket.disconnect();
-        }
-        
-        // eslint-disable-next-line
-    }, []);
 
     const ProfileImageModalShow = (e) => {
         e.preventDefault();
@@ -86,13 +74,14 @@ export default function Configuration() {
                             ID: localStorage.getItem("User")
                         }
                     }).then((Data) => {
-                        dispatch(UpdateUserInfo({Name: Data.data.Name, Lastname: Data.data.Lastname, Email: Data.data.Email, ProfileImage: Data.data.ProfileImage}));
-                        Data.data.LastReadedConversation.isSelected = true;
-                        dispatch(SelectedConversation(Data.data.LastReadedConversation));
-                        dispatch(AsideStatus("Conversation"));
+                        Data.data.LastReadedConversation.isSelected = false;
                         
                         setUpdatingInfo(false);
                         Toast.success("Se ha actualizado su información satisfactoriamente.", "Información Actualizada", { timeOut: 2500, showDuration: true, closeButton: true });
+
+                        dispatch(UpdateUserInfo({Name: Data.data.Name, Lastname: Data.data.Lastname, Email: Data.data.Email, ProfileImage: Data.data.ProfileImage}));
+                        dispatch(SelectedConversation(Data.data.LastReadedConversation));
+                        dispatch(AsideStatus("Conversation"));
                     });
                 }
                 else{

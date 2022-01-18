@@ -2,7 +2,6 @@ import React, { useEffect } from 'react'
 import ScreenDimensions from "../../Others/useScreenDimensions";
 import MD5 from 'md5';
 import Axios from 'axios';
-import { io } from "socket.io-client";
 import { useTranslation } from 'react-i18next';
 
 /* Redux */
@@ -18,7 +17,7 @@ import SpanishStrings from "react-timeago/lib/language-strings/es-short";
 import FrenchStrings from "react-timeago/lib/language-strings/en-short";
 import buildFormatter from "react-timeago/lib/formatters/buildFormatter";
 
-export default function ConversationsList({ Conversations }){
+export default function ConversationsList({ Conversations, Socket }){
     const { ScreenWidth, ScreenHeight } = ScreenDimensions();
     const { t } = useTranslation("Messenger");
     const ConversationListRef = React.createRef();
@@ -26,7 +25,6 @@ export default function ConversationsList({ Conversations }){
     const ApiURL = useSelector(state => state.ApiURL.URL);
 
     const dispatch = useDispatch();
-    const Socket = io(ApiURL);
 
     const EnglishFormatter = buildFormatter(EnglishStrings);
     const SpanishFormatter = buildFormatter(SpanishStrings);
@@ -43,8 +41,6 @@ export default function ConversationsList({ Conversations }){
     }, [ConversationListRef])
 
     useEffect(() => {
-        Socket.connect();
-
         Socket.on(localStorage.getItem("User"), (NewMessage) => {
             if(ScreenWidth < 880){
                 Axios.get(`${ApiURL}/api/Conversation/Search`, {
@@ -55,12 +51,6 @@ export default function ConversationsList({ Conversations }){
                 });
             }
         });
-
-        return () => {
-            setTimeout(() => {
-                Socket.disconnect();
-            }, 50);
-        }
         // eslint-disable-next-line
     }, [Conversations])
 
