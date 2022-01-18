@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Axios from "axios";
-import ScrollToBottom from 'react-scroll-to-bottom';
 import { useTranslation } from "react-i18next";
+import ScrollToBottom from 'react-scroll-to-bottom';
 import ScreenDimensions from "../../Others/useScreenDimensions";
 import MD5 from "md5";
 
@@ -35,6 +35,8 @@ export default function Chat({ Socket }) {
     const ApiURL = useSelector(state => state.ApiURL.URL);
     
     useEffect(() => {
+        UpdateChatHeight();
+        
         Socket.on(localStorage.getItem("User"), (NewMessage) => {
             let MessagesAux = store.getState().ConversationMessages.Messages;
             let SelectedConversationAux = store.getState().SelectedConversation;
@@ -71,6 +73,14 @@ export default function Chat({ Socket }) {
         });
         // eslint-disable-next-line
     }, []);
+
+    useEffect(() => {
+        UpdateChatHeight();
+    }, [ScreenWidth])
+
+    useEffect(() => {
+        document.getElementsByClassName("Messages")[0].children[0].scrollTo({top: document.getElementsByClassName("Messages")[0].children[0].scrollHeight});
+    }, [Messages]);
 
     useEffect(() => {
         MessageInputRef.current.focus();
@@ -112,6 +122,15 @@ export default function Chat({ Socket }) {
 
         // eslint-disable-next-line
     }, [SelectedConversation]);
+
+    const UpdateChatHeight = () => {
+        if(window.innerWidth < 880){
+            document.documentElement.style.setProperty("--Chat-Height", "85%");
+        }
+        else{
+            document.documentElement.style.setProperty("--Chat-Height", "87.5%");
+        }
+    };
 
     const ChangeMessage = (e) => {
         setMessage(e.target.value);

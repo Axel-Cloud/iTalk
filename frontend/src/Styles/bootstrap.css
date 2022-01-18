@@ -12292,7 +12292,7 @@ fieldset:disabled .btn {
 }
 
 .Chat .MessageList .Messages{
-  height: 88%;
+  height: var(--Chat-Height);
   overflow: scroll;
 }
 

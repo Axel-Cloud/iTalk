@@ -5,7 +5,7 @@ import Axios from 'axios';
 import { useTranslation } from 'react-i18next';
 
 /* Redux */
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector, useDispatch, useStore } from 'react-redux';
 import { SelectedConversation } from '../../Store/SelectedConversation/action';
 import { ConversationMessages } from "../../Store/ConversationMessages/action";
 import { UpdateConversations } from "../../Store/Conversations/action";
@@ -22,6 +22,7 @@ export default function ConversationsList({ Conversations, Socket }){
     const { t } = useTranslation("Messenger");
     const ConversationListRef = React.createRef();
 
+    const store = useStore();
     const ApiURL = useSelector(state => state.ApiURL.URL);
 
     const dispatch = useDispatch();
@@ -59,13 +60,17 @@ export default function ConversationsList({ Conversations, Socket }){
     }, [ScreenHeight, ConversationListRef])
 
     const ChangeConversation = (Index) => {
+        let SelectedConversationAux = store.getState().SelectedConversation;
         let ConversationsAux = Conversations.slice();
-        ConversationsAux[Index].Conversation.UnreadedMessages = 0;
 
-        dispatch(UpdateConversations(ConversationsAux));
-        dispatch(ConversationMessages([]));
-        Conversations[Index].SecondUser.isSelected = true;
-        dispatch(SelectedConversation(Conversations[Index].SecondUser));
+        if(ScreenWidth < 880 || ConversationsAux[Index].SecondUser._id !== SelectedConversationAux.ID){
+            ConversationsAux[Index].Conversation.UnreadedMessages = 0;
+            
+            dispatch(UpdateConversations(ConversationsAux));
+            dispatch(ConversationMessages([]));
+            Conversations[Index].SecondUser.isSelected = true;
+            dispatch(SelectedConversation(Conversations[Index].SecondUser));
+        }
     }
 
     return (
