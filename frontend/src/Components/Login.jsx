@@ -5,10 +5,11 @@ import { useTranslation } from "react-i18next";
 import { motion } from "framer-motion";
 import { Link } from 'react-router-dom';
 import Axios from "axios";
-import Toast from "toastr";
 import ScreenDimensions from "../Others/useScreenDimensions";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faLanguage as Language} from '@fortawesome/free-solid-svg-icons';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 /* Redux */
 import { useSelector } from "react-redux";
@@ -53,7 +54,7 @@ export default function Login({ ResetSignUpTransition }){
         e.preventDefault();
         
         if(LoginEmail === "" || LoginPassword === ""){
-            Toast.warning(t("MissingLoginDataMessage"), t("MissingLoginDataTitle"), { timeOut: 2500, showDuration: true, closeButton: true })
+            toast.warning(t("MissingLoginDataMessage"));
         }
         else{
             Axios.get(`${ApiURL}/api/Users`, {
@@ -63,17 +64,17 @@ export default function Login({ ResetSignUpTransition }){
                 }
             }).then((Data) => {
                 if(Data.data === "Invalid"){
-                    Toast.warning(t("InvalidLoginMessage"), t("InvalidLoginTitle"), { timeOut: 2500, showDuration: true, closeButton: true })
+                    toast.warning(t("InvalidLoginMessage"));
                 }
                 else if(Data.data.startsWith("Error")){
-                    Toast.error(t("ErrorLoginMessage"), t("ErrorLoginTitle"), { timeOut: 2500, showDuration: true, closeButton: true })
+                    toast.error(t("ErrorLoginMessage"));
                 }
                 else{
                     localStorage.setItem("User", Data.data);
                     window.location.reload();
                 }
             }).catch(() => {
-                Toast.error(t("ErrorLoginMessage"), t("ErrorLoginTitle"), { timeOut: 2500, showDuration: true, closeButton: true })
+                toast.error(t("ErrorLoginMessage"));
             })
         }
     }
@@ -130,6 +131,8 @@ export default function Login({ ResetSignUpTransition }){
                         </div>
                     </div>
                 </section>
+
+                <ToastContainer position="top-right" theme="colored" autoClose={2500} hideProgressBar={false} newestOnTop={false} closeOnClick rtl={false} pauseOnFocusLoss draggable pauseOnHover/>
             </div>
         </motion.div>
     );

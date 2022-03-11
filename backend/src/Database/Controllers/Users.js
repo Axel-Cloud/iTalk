@@ -203,7 +203,7 @@ const ForgotPass = async (Data, UserResponse) => {
               secure: false, // true for 465, false for other ports
               auth: {
                 user: "iTalkSecure@gmail.com",
-                pass: "26ax02st"
+                pass: "rhlobptllpyignkd"
               },
             }); 
 

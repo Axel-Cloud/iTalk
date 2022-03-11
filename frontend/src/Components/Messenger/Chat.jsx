@@ -4,6 +4,7 @@ import { useTranslation } from "react-i18next";
 import ScrollToBottom from 'react-scroll-to-bottom';
 import ScreenDimensions from "../../Others/useScreenDimensions";
 import MD5 from "md5";
+import TextareaAutosize from 'react-textarea-autosize';
 
 /* Icons */
 import { ReactComponent as SendIcon } from '../../Assets/icons/Send.svg';
@@ -21,10 +22,11 @@ export default function Chat({ Socket }) {
     const [FirstLineLength, setFirstLineLength] = useState(0);
     const [SecondLineLength, setSecondLineLength] = useState(0);
 
-    const { ScreenWidth } = ScreenDimensions();
+    const { ScreenWidth, ScreenHeight } = ScreenDimensions();
 
     const dispatch = useDispatch();
     const { t } = useTranslation("Messenger");
+    const SeparatorRef = React.createRef();
     const MessageInputRef = React.createRef();
     const SendButtonRef = React.createRef();
 
@@ -34,17 +36,16 @@ export default function Chat({ Socket }) {
     const Messages = useSelector(state => state.ConversationMessages.Messages);
     const ApiURL = useSelector(state => state.ApiURL.URL);
     
-    useEffect(() => {
-        UpdateChatHeight();
-        
+    useEffect(() => {        
         Socket.on(localStorage.getItem("User"), (NewMessage) => {
             let MessagesAux = store.getState().ConversationMessages.Messages;
             let SelectedConversationAux = store.getState().SelectedConversation;
 
             if(NewMessage.UserID === SelectedConversationAux.ID){
-                
                 if(MessagesAux !== undefined && MessagesAux !== []){
-                    dispatch(ConversationMessages([...MessagesAux, NewMessage]));
+                    if(MessagesAux.findIndex(Message => Message._id === NewMessage._id) === -1){
+                        dispatch(ConversationMessages([...MessagesAux, NewMessage]));
+                    }
                 }
                 else{
                     dispatch(ConversationMessages([NewMessage]));
@@ -59,7 +60,9 @@ export default function Chat({ Socket }) {
             }
             else if(NewMessage.UserID === localStorage.getItem("User")){
                 if(MessagesAux !== undefined && MessagesAux !== []){
-                    dispatch(ConversationMessages([...MessagesAux, NewMessage]));
+                    if(MessagesAux.findIndex(Message => Message._id === NewMessage._id) === -1){
+                        dispatch(ConversationMessages([...MessagesAux, NewMessage]));
+                    }
                 }
                 else{
                     dispatch(ConversationMessages([NewMessage]));
@@ -76,7 +79,8 @@ export default function Chat({ Socket }) {
 
     useEffect(() => {
         UpdateChatHeight();
-    }, [ScreenWidth])
+        // eslint-disable-next-line
+    }, [ScreenWidth, ScreenHeight])
 
     useEffect(() => {
         document.getElementsByClassName("Messages")[0].children[0].scrollTo({top: document.getElementsByClassName("Messages")[0].children[0].scrollHeight});
@@ -124,11 +128,11 @@ export default function Chat({ Socket }) {
     }, [SelectedConversation]);
 
     const UpdateChatHeight = () => {
-        if(window.innerWidth < 880){
-            document.documentElement.style.setProperty("--Chat-Height", "85%");
+        if(document.documentElement.style.getPropertyValue("--Chat-Height") === ""){
+            document.documentElement.style.setProperty("--Chat-Height", `${ScreenHeight - SeparatorRef.current.getBoundingClientRect().bottom - MessageInputRef.current.getBoundingClientRect().top}px`);
         }
         else{
-            document.documentElement.style.setProperty("--Chat-Height", "87.5%");
+            document.documentElement.style.setProperty("--Chat-Height", `${(ScreenHeight - document.getElementsByClassName("Messages")[0].getBoundingClientRect().top - (ScreenHeight - MessageInputRef.current.getBoundingClientRect().top)) * 0.985}px`);   
         }
     };
 
@@ -185,7 +189,7 @@ export default function Chat({ Socket }) {
                     <article className="d-flex align-items-center h-100 w-100 ms-1">
                         {
                             ScreenWidth < 880 &&
-                            <button className='bg-transparent border-0 me-2' style={{width: "35px", maxWidth: "35px"}} onClick={ReturnConversationList}>
+                            <button className='bg-transparent border-0 me-2' style={{width: "35px"}} onClick={ReturnConversationList}>
                                 <BackArrow style={{width: "100%"}}/>
                             </button>
                         }
@@ -204,7 +208,7 @@ export default function Chat({ Socket }) {
                     </article>
                 </section>
 
-                <hr className={`mt-0 ${ScreenWidth >= 880 ? "me-4" : "ms-3 me-3"} `}/>
+                <hr className={`mt-0 ${ScreenWidth >= 880 ? "me-4" : "ms-3 me-3"} `} ref={SeparatorRef}/>
 
                 <ScrollToBottom className="Messages">
                     {
@@ -247,7 +251,7 @@ export default function Chat({ Socket }) {
 
             <div className="d-flex MessageField">
                 <div className="h-100 ms-3 me-2">
-                    <textarea className="form-control" rows={TARows} ref={MessageInputRef} onChange={(e) => ChangeMessage(e)} onKeyPress={(e) => {if(e.code === "Enter" || e.code === "NumpadEnter"){SendMessage(e)}}}/>
+                    <TextareaAutosize className="form-control" maxRows={3} ref={MessageInputRef} onChange={(e) => ChangeMessage(e)} onKeyPress={(e) => {if(e.code === "Enter" || e.code === "NumpadEnter"){SendMessage(e)}}}/>
                 </div>
 
                 <button className="d-block w-auto h-100 border-0 me-4" ref={SendButtonRef} onClick={(e) => SendMessage(e)}>

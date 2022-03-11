@@ -4,7 +4,8 @@ import ScreenDimensions from "../../Others/useScreenDimensions";
 import Axios from 'axios';
 import { Modal } from "react-bootstrap";
 import { useTranslation } from "react-i18next";
-import Toast from "toastr";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 /* Components */
 import ConversationList from './ConversationList';
@@ -31,7 +32,7 @@ export default function AsideMenu({ Socket }){
     const [ShowProfileImageModal, setShowProfileImageModal] = useState(false);
 
     const dispatch = useDispatch();
-    const { t } = useTranslation("Messenger");
+    const { t } = useTranslation("AsideMenu");
     const InputRef = React.createRef();
 
     const { ScreenWidth } = ScreenDimensions();
@@ -108,8 +109,10 @@ export default function AsideMenu({ Socket }){
                     "Search": Value
                 }
             }).then((Data) => {
-                setSearchData(Data.data);
-                dispatch(AsideStatus("Search"));
+                if(InputRef.current !== null && InputRef.current.value.length > 0){
+                    setSearchData(Data.data);
+                    dispatch(AsideStatus("Search"));
+                }            
             });
         }
         else{
@@ -142,14 +145,14 @@ export default function AsideMenu({ Socket }){
 
             ImageReader.onerror = () => {
                 setLoadingProfileImage(false);
-                Toast.error("Hubo un error al intentar cargar la imagen, intente nuevamente", "Error", { timeOut: 2500, showDuration: true, closeButton: true });
+                toast.error(t("ProfileImageError"));
             };
         }
         else if((Image.size / 1000000) > 0.512){
-            Toast.warning("La imagen debe tener un peso máximo de 512kb", "Advertencia", { timeOut: 2500, showDuration: true, closeButton: true });
+            toast.warning(t("ProfileImageMaxSizeError"));
         }
         else{
-            Toast.warning("El archivo debe ser una imagen.", "Advertencia", { timeOut: 2500, showDuration: true, closeButton: true });
+            toast.warning(t("ProfileImageExtError"));
         }
     }
 
@@ -169,7 +172,7 @@ export default function AsideMenu({ Socket }){
                 ProfileImageModalClose();
             }
             else{
-                Toast.error("Hubo un error al actualizar la imagen, intente nuevamente", "Error", { timeOut: 2500, showDuration: true, closeButton: true });
+                toast.error(t("ProfileImageUpdateError"));
             }
         });
     }
@@ -184,16 +187,16 @@ export default function AsideMenu({ Socket }){
                             <img className="d-block w-75" src={iTalkIcon} alt="iTalk Icon" />
                         </figure>
                         <div className="w-100 AsideIcons mb-3">
-                            <button className={`d-block mt-4 ms-auto me-auto border-0 ${SectionType === "Conversation" ? "SelectedMenu" : "bg-transparent"}`} onClick={() => ChangeSection("Conversation")}>
-                                <ChatIcon className="IconColor"/>
+                            <button className={`d-block mt-4 ms-auto me-auto border-0 ${SectionType === "Conversation" ? "SelectedMenu" : "bg-transparent"}`} onClick={() => ChangeSection("Conversation")} style={{width: "50%"}}>
+                                <ChatIcon className="IconColor" style={{width: "100%"}}/>
                             </button>
 
-                            <button className={`d-block mt-4 ms-auto me-auto border-0 ${SectionType === "Configuration" ? "SelectedMenu" : "bg-transparent"}`} onClick={() => ChangeSection("Configuration")}>
-                                <ConfigIcon className="IconColor"/>
+                            <button className={`d-block mt-4 ms-auto me-auto border-0 ${SectionType === "Configuration" ? "SelectedMenu" : "bg-transparent"}`} onClick={() => ChangeSection("Configuration")} style={{width: "50%"}}>
+                                <ConfigIcon className="IconColor" style={{width: "100%"}}/>
                             </button>
 
-                            <button className="d-block mt-4 ms-auto me-auto border-0 bg-transparent" onClick={ Logout }>
-                                <SignOutIcon className="IconColor"/>
+                            <button className="d-block mt-4 ms-auto me-auto border-0 bg-transparent" onClick={ Logout } style={{minWidth: "50%"}}>
+                                <SignOutIcon className="IconColor" style={{width: "100%"}}/>
                             </button>
                         </div>
                     </section>
@@ -253,7 +256,7 @@ export default function AsideMenu({ Socket }){
                             <ConversationList Conversations={Conversations} Socket={Socket}/>
                             :
                             SectionType === "Search" ?
-                            <Search Data={SearchData}/>   
+                            <Search Data={SearchData}/>
                             :
                             SectionType === "Configuration" ?
                             <Configuration Socket={Socket}/>
@@ -299,6 +302,8 @@ export default function AsideMenu({ Socket }){
                     }
                 </Modal.Footer>
             </Modal>
+
+            <ToastContainer position="top-right" theme="colored" autoClose={2500} hideProgressBar={false} newestOnTop={false} closeOnClick rtl={false} pauseOnFocusLoss draggable pauseOnHover/>
         </aside>
     ); 
 }

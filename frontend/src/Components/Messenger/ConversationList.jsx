@@ -56,7 +56,7 @@ export default function ConversationsList({ Conversations, Socket }){
     }, [Conversations])
 
     useEffect(() => {
-        document.documentElement.style.setProperty("--Conversation-List-Height", `${ScreenHeight - ConversationListRef.current.getBoundingClientRect().top}px`);
+        document.documentElement.style.setProperty("--Conversation-List-Height", `${window.innerHeight - ConversationListRef.current.getBoundingClientRect().top}px`);
     }, [ScreenHeight, ConversationListRef])
 
     const ChangeConversation = (Index) => {
@@ -99,6 +99,7 @@ export default function ConversationsList({ Conversations, Socket }){
                                             <p className="col-2 ps-0 mb-0 text-black fs-6 text-end pe-3">
                                                 <TimeAgo date={Date.parse(Conversation.Conversation.LastMessageDate)} formatter={localStorage.getItem("Lang") === "fr" ? FrenchFormatter : localStorage.getItem("Lang") === "es" ? SpanishFormatter : EnglishFormatter} />
                                             </p>
+                                            
                                             <p className="col-9 ps-0 mt-1 text-muted LastMessage">{Conversation.Conversation.LastMessage}</p>
                                             
                                             {

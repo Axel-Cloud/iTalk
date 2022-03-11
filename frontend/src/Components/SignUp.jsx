@@ -2,11 +2,12 @@ import React from 'react';
 import iTalk_Logo from "../Assets/iTalk_Logo.png";
 import Axios from "axios";
 import CryptoJs from "crypto-js";
-import Toast from "toastr";
 import ScreenDimensions from "../Others/useScreenDimensions";
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 /* Redux */
 import { useSelector } from "react-redux";
@@ -100,14 +101,14 @@ export default function SignUp({ InitialTransition }){
                 "Gender": Gender
             }).then((Data) => {
                 if(Data.data === "Created"){
-                    Toast.success(t("CreateAccountSuccessDescription"), t("CreateAccountSuccessTitle"), { timeOut: 2500, showDuration: true, closeButton: true });
+                    toast.success(t("CreateAccountSuccessDescription"));
 
                     if(LoginButton.current !== null){
                         LoginButton.current.click();
                     }
                 }
                 else if(Data.data === "Error: Duplicated Email"){
-                    Toast.warning(t("DuplicatedEmailDescription"), t("DuplicatedEmailTitle"), { timeOut: 2500, showDuration: true, closeButton: true });
+                    toast.warning(t("DuplicatedEmailDescription"));
 
                     FirstNameRef.current.disabled = false;
                     LastNameRef.current.disabled = false;
@@ -120,7 +121,7 @@ export default function SignUp({ InitialTransition }){
                     SignUpButton.current.disabled = false;
                 }
                 else{
-                    Toast.warning(t("CreateAccountErrorDescription"), t("CreateAccountErrorTitle"), { timeOut: 2500, showDuration: true, closeButton: true });
+                    toast.warning(t("CreateAccountErrorDescription"));
                     
                     FirstNameRef.current.disabled = false;
                     LastNameRef.current.disabled = false;
@@ -135,7 +136,7 @@ export default function SignUp({ InitialTransition }){
             });
         }
         else{
-            Toast.warning(t("MustCompleteFields"), t("DuplicatedEmailTitle"), { timeOut: 2500, showDuration: true, closeButton: true });
+            toast.warning(t("MustCompleteFields"));
         }
     }
 
@@ -304,6 +305,8 @@ export default function SignUp({ InitialTransition }){
                     </div>
                 </div>
             </section>
+
+            <ToastContainer position="top-right" theme="colored" autoClose={5000} hideProgressBar={false} newestOnTop={false} closeOnClick rtl={false} pauseOnFocusLoss draggable pauseOnHover/>
         </motion.div>
     );
 }

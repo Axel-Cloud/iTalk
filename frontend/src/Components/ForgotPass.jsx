@@ -1,11 +1,12 @@
 import React from 'react';
 import iTalk_Logo from "../Assets/iTalk_Logo.png";
 import Axios from "axios";
-import Toast from "toastr";
 import { useTranslation } from 'react-i18next';
 import ScreenDimensions from "../Others/useScreenDimensions";
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 /* Redux */
 import { useSelector } from "react-redux";
@@ -70,14 +71,14 @@ export default function ForgotPass(){
         if(EmailRef.current.classList.contains("is-valid")){
             Axios.post(`${ApiURL}/api/Users/Forgot`, { "Email": Email, "Language": localStorage.getItem("Lang")}).then((Data) => {
                 if(Data.data === "Email Sent"){
-                    Toast.success(t("EmailSentSuccess"), "", { timeOut: 5000, showDuration: true, closeButton: true });
+                    toast.success(t("EmailSentSuccess"));
                     
                     if(ReturnRef.current !== null){
                         ReturnRef.current.click();
                     }
                 }
                 else{
-                    Toast.error(t("EmailSentErrorDescription"), t("EmailSentErrorTitle"), { timeOut: 5000, showDuration: true, closeButton: true });
+                    toast.error(t("EmailSentErrorDescription"));
                     
                     EmailRef.current.disabled = false;
                     ForgotSubmit.current.disabled = false;
@@ -107,6 +108,8 @@ export default function ForgotPass(){
 
                 <Link className="d-block w-75 m-auto mt-3 text-end text-decoration-none" ref={ReturnRef} to="/">{ t("RememberCredentials") }</Link>
             </section>
+
+            <ToastContainer position="top-right" theme="colored" autoClose={5000} hideProgressBar={false} newestOnTop={false} closeOnClick rtl={false} pauseOnFocusLoss draggable pauseOnHover/>
         </motion.div>
     );
 }

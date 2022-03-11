@@ -1,0 +1,12 @@
+{
+    "Online": "En Ligne",
+    "SearchDescription": "Trouver des personnes à qui parler",
+    "ProfileImageModalTitle": "Modifier l'image du profil",
+    "ProfileImageModalCancel": "Annuler",
+    "LoadImage": "Charger l'image",
+    "SaveChanges": "Sauvegarder les modifications",
+    "ProfileImageError": "Une erreur s'est produite lors du téléchargement de l'image, veuillez réessayer.",
+    "ProfileImageMaxSizeError": "L'image doit avoir une taille de fichier maximale de 512 Ko.",
+    "ProfileImageExtError": "Le fichier doit être une image.",
+    "ProfileImageUpdateError": "Une erreur s'est produite lors de la mise à jour de l'image, veuillez réessayer."
+}

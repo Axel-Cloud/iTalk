@@ -40,6 +40,11 @@ import Configuration_en from "./Translations/en/Configuration.json";
 import Configuration_es from "./Translations/es/Configuration.json";
 import Configuration_fr from "./Translations/fr/Configuration.json";
 
+//Aside Menu
+import AsideMenu_en from "./Translations/en/AsideMenu.json";
+import AsideMenu_es from "./Translations/es/AsideMenu.json";
+import AsideMenu_fr from "./Translations/fr/AsideMenu.json";
+
 /* End Translations */
 
 i18next.init({
@@ -52,7 +57,8 @@ i18next.init({
       Forgot: ForgotPassword_en,
       Reset: ResetPassword_en,
       Messenger: Messenger_en,
-      Configuration: Configuration_en
+      Configuration: Configuration_en,
+      AsideMenu: AsideMenu_en
     },
     es: {
       Login: Login_es,
@@ -60,7 +66,8 @@ i18next.init({
       Forgot: ForgotPassword_es,
       Reset: ResetPassword_es,
       Messenger: Messenger_es,
-      Configuration: Configuration_es
+      Configuration: Configuration_es,
+      AsideMenu: AsideMenu_es
     },
     fr: {
       Login: Login_fr,
@@ -68,7 +75,8 @@ i18next.init({
       Forgot: ForgotPassword_fr,
       Reset: ResetPassword_fr,
       Messenger: Messenger_fr,
-      Configuration: Configuration_fr
+      Configuration: Configuration_fr,
+      AsideMenu: AsideMenu_fr
     }
   }
 });

@@ -2,12 +2,13 @@ import React, { useState, useEffect } from 'react'
 import iTalk_Logo from "../Assets/iTalk_Logo.png";
 import Axios from "axios";
 import CryptoJs from "crypto-js";
-import Toast from "toastr";
 import ScreenDimensions from "../Others/useScreenDimensions";
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useTranslation } from "react-i18next";
 import { useParams, useLocation } from 'react-router';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 /* Redux */
 import { useSelector } from "react-redux";
@@ -74,34 +75,46 @@ export default function ResetPass(){
         if(PasswordRef.current.classList.contains("is-valid") && ConfirmPasswordRef.current.classList.contains("is-valid")){
             Axios.put(`${ApiURL}/api/Users/Reset`, { Token, "Password": CryptoJs.SHA256(Password).toString() }).then((Data) => {
                 if(Data.data === "Password Updated"){
-                    Toast.success(t("UpdatedPasswordDescription"), t("UpdatedPasswordTitle"), { timeOut: 5000, showDuration: true, closeButton: true });
+                    toast.success(t("UpdatedPasswordDescription"));
 
                     if(ReturnButtonRef.current !== null){
                         ReturnButtonRef.current.click();
                     }
                 }
                 else if(Data.data === "User not found" || Data.data === "Invalid Token"){
-                    Toast.warning(t("UserNotFound"), "", { timeOut: 5000, showDuration: true, closeButton: true });
+                    toast.warning(t("UserNotFound"));
                     
                     PasswordRef.current.disabled = false;
                     ConfirmPasswordRef.current.disabled = false;
                     UpdatePassButton.current.disabled = false;
                 }
                 else if(Data.data === "Expired Token"){
-                    Toast.warning(t("InvalidToken"), "", { timeOut: 5000, showDuration: true, closeButton: true });
+                    toast.warning(t("InvalidToken"));
 
                     PasswordRef.current.disabled = false;
                     ConfirmPasswordRef.current.disabled = false;
                     UpdatePassButton.current.disabled = false;
                 }
                 else{
-                    Toast.error(t("ErrorDescription"), t("ErrorTitle"), { timeOut: 5000 , showDuration: true, closeButton: true });
+                    toast.error(t("ErrorDescription"));
 
                     PasswordRef.current.disabled = false;
                     ConfirmPasswordRef.current.disabled = false;
                     UpdatePassButton.current.disabled = false;
                 }
             });
+        }
+        else{
+            if(PasswordRef.current.value.length < 6){
+                toast.warning(t("ShortPassword"));
+            }
+            else{
+                toast.warning(t("PasswordNotEqualDescription"));
+            }
+
+            PasswordRef.current.disabled = false;
+            ConfirmPasswordRef.current.disabled = false;
+            UpdatePassButton.current.disabled = false;
         }
     }
 
@@ -161,6 +174,8 @@ export default function ResetPass(){
 
                         <Link className="d-block w-75 m-auto mt-3 text-end text-decoration-none" ref={ReturnButtonRef} to="/"> { t("RememberPassword") } </Link>
                     </section>
+
+                    <ToastContainer position="top-right" theme="colored" autoClose={5000} hideProgressBar={false} newestOnTop={false} closeOnClick rtl={false} pauseOnFocusLoss draggable pauseOnHover/>
                 </motion.div>
                 :
                 <Link id="ReturnButtonccl" className="opacity-0" to="/"></Link>

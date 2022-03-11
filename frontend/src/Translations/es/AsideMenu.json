@@ -1,0 +1,12 @@
+{
+    "Online": "En Línea",
+    "SearchDescription": "Encuentra gente para hablar",
+    "ProfileImageModalTitle": "Editar Foto de Perfil",
+    "ProfileImageModalCancel": "Cancelar",
+    "LoadImage": "Cargar Imagen",
+    "SaveChanges": "Guardar Cambios",
+    "ProfileImageError": "Hubo un error al intentar cargar la imagen, intente nuevamente.",
+    "ProfileImageMaxSizeError": "La imagen debe tener un tamaño de archivo máximo de 512kb.",
+    "ProfileImageExtError": "El archivo debe ser una imagen.",
+    "ProfileImageUpdateError": "Hubo un error al actualizar la imagen, intente nuevamente."
+}

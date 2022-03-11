@@ -1,0 +1,12 @@
+{
+    "Online": "Online",
+    "SearchDescription": "Find people to talk",
+    "ProfileImageModalTitle": "Edit Profile Image",
+    "ProfileImageModalCancel": "Cancel",
+    "LoadImage": "Load Image",
+    "SaveChanges": "Save Changes",
+    "ProfileImageError": "There was an error trying to upload the image, please try again.",
+    "ProfileImageMaxSizeError": "The image must have a maximum file size of 512kb.",
+    "ProfileImageExtError": "The file must be an image.",
+    "ProfileImageUpdateError": "There was an error updating the image, please try again."
+}

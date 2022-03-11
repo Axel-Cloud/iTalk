@@ -11,5 +11,11 @@
     "ProfileImageModalTitle": "Éditer la photo de profil",
     "ModalCancel": "Annuler",
     "LoadImage": "Charger l'image",
-    "SaveChanges": "Sauvegarder les modifications"
+    "SaveChanges": "Sauvegarder les modifications",
+    "InfoUpdated": "Vos informations ont été mises à jour avec succès.",
+    "InfoWarning": "Une erreur s'est produite lors de la tentative de modification de vos données utilisateur.",
+    "PasswordNotEqual": "Les mots de passe saisis ne correspondent pas.",
+    "ProfileImageError": "Une erreur s'est produite lors de la tentative de téléchargement de l'image, veuillez réessayer",
+    "MaxSizeImage": "L'image doit avoir une taille de fichier maximale de 512 Ko.",
+    "ErrorExtImage": "Le fichier doit être une image."
 }

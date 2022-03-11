@@ -1,12 +1,13 @@
 import React, { useState } from 'react'
 import { Modal } from "react-bootstrap";
-import Toast from "toastr";
 import Axios from 'axios';
 import ScreenDimensions from "../../Others/useScreenDimensions";
 import CryptoJs from "crypto-js";
 import { useTranslation } from "react-i18next";
 import { faLanguage as Language} from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 /* Redux */
 import { useSelector, useDispatch } from "react-redux";
@@ -77,7 +78,7 @@ export default function Configuration({Socket}) {
                         Data.data.LastReadedConversation.isSelected = false;
                         
                         setUpdatingInfo(false);
-                        Toast.success("Se ha actualizado su información satisfactoriamente.", "Información Actualizada", { timeOut: 2500, showDuration: true, closeButton: true });
+                        toast.success(t("InfoUpdated"));
 
                         dispatch(UpdateUserInfo({Name: Data.data.Name, Lastname: Data.data.Lastname, Email: Data.data.Email, ProfileImage: Data.data.ProfileImage}));
                         dispatch(SelectedConversation(Data.data.LastReadedConversation));
@@ -85,12 +86,12 @@ export default function Configuration({Socket}) {
                     });
                 }
                 else{
-                    Toast.warning("Ha ocurrido un error al intentar cambiar los datos de su usuario.", "Advertencia", { timeOut: 2500, showDuration: true, closeButton: true });
+                    toast.warning(t("InfoWarning"));
                 }
             });
         }
         else{
-            Toast.warning("Las contraseñas ingresadas no coinciden.", "Advertencia", { timeOut: 2500, showDuration: true, closeButton: true });
+            toast.warning(t("PasswordNotEqual"));
         }
     }
 
@@ -112,14 +113,14 @@ export default function Configuration({Socket}) {
 
             ImageReader.onerror = () => {
                 setLoadingProfileImage(false);
-                Toast.error("Hubo un error al intentar cargar la imagen, intente nuevamente", "Error", { timeOut: 2500, showDuration: true, closeButton: true });
+                toast.error(t("ProfileImageError"));
             };
         }
         else if((Image.size / 1000000) > 0.512){
-            Toast.warning("La imagen debe tener un peso máximo de 512kb", "Advertencia", { timeOut: 2500, showDuration: true, closeButton: true });
+            toast.warning(t("MaxSizeImage"));
         }
         else{
-            Toast.warning("El archivo debe ser una imagen.", "Advertencia", { timeOut: 2500, showDuration: true, closeButton: true });
+            toast.warning(t("ErrorExtImage"));
         }
     }
 
@@ -245,6 +246,8 @@ export default function Configuration({Socket}) {
                     }
                 </Modal.Footer>
             </Modal>
+
+            <ToastContainer position="top-right" theme="colored" autoClose={2500} hideProgressBar={false} newestOnTop={false} closeOnClick rtl={false} pauseOnFocusLoss draggable pauseOnHover/>
         </section>
     )
 }
